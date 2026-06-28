@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Mirador - a rooftop bar above Bucharest. Crafted cocktails, cinematic nights, and a 280-degree city view from golden hour to 2am. Reserve your table.">
+<meta name="theme-color" content="#05030a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 24'%3E%3Crect width='44' height='24' fill='%2305030a'/%3E%3Cpath d='M3 12 Q22 1 41 12 Q22 23 3 12 Z' fill='none' stroke='%23ede3d8' stroke-width='1.4'/%3E%3Ccircle cx='22' cy='12' r='5' fill='none' stroke='%23ede3d8' stroke-width='1.1'/%3E%3Ccircle cx='22' cy='12' r='2.2' fill='%239b1f35'/%3E%3C/svg%3E">
+<meta name="author" content="Mirador Rooftop">
+<link rel="canonical" href="https://mirador.example">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mirador Rooftop">
+<meta property="og:title" content="Mirador - Above the City">
+<meta property="og:description" content="Rooftop cocktails and cinematic nights above Bucharest. Reserve your table.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1485872299829-c673f5194813?w=1200&q=80&auto=format&fit=crop">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mirador - Above the City">
+<meta name="twitter:description" content="Rooftop cocktails and cinematic nights above Bucharest.">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1485872299829-c673f5194813?w=1200&q=80&auto=format&fit=crop">
+<title>Mirador — Above the City</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500;1,600;1,700&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ═════════ RESET ═════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --bg: #05030a;
+  --bg-2: #0a0610;
+  --crimson: #9b1f35;
+  --rose: #c85a72;
+  --ivory: #ede3d8;
+  --ivory-dim: rgba(237,227,216,0.55);
+  --gold: #c4a060;
+  --lime: #9ccc4a;
+  --orange: #e89556;
+  --violet: #8a6abf;
+}
+html{ scroll-behavior: smooth; }
+body{
+  background: var(--bg);
+  color: var(--ivory);
+  font-family:'Montserrat',sans-serif;
+  font-weight:200;
+  overflow-x:hidden;
+  cursor:none;
+  -webkit-font-smoothing:antialiased;
+}
+a, button{ cursor:none; }
+button{ background:none; border:none; color:inherit; font:inherit; }
+
+/* grain + vignette */
+.grain{
+  position:fixed; inset:0; z-index:9500; pointer-events:none;
+  opacity:0.06; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.88 0 0 0 0 0.8 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+.vignette{
+  position:fixed; inset:0; z-index:9400; pointer-events:none;
+  background: radial-gradient(ellipse 120% 80% at 50% 50%, transparent 40%, rgba(5,3,10,0.55) 100%);
+}
+
+/* ═════════ CURSOR ═════════ */
+#cursor{ position:fixed; inset:0; z-index:9999; pointer-events:none; }
+#c-dot{
+  position:absolute; width:6px; height:6px;
+  background: var(--ivory); border-radius:50%;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:difference;
+}
+#c-ring{
+  position:absolute; width:44px; height:44px;
+  border:1px solid rgba(237,227,216,0.4); border-radius:50%;
+  transform:translate(-50%,-50%);
+  transition: width .35s cubic-bezier(.34,1.56,.64,1), height .35s cubic-bezier(.34,1.56,.64,1), border-color .3s, background .3s;
+}
+#c-glow{
+  position:absolute; width:140px; height:140px;
+  background: radial-gradient(circle, rgba(155,31,53,0.18) 0%, transparent 65%);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+#c-ring.hover{
+  width:78px; height:78px;
+  border-color: rgba(200,90,114,0.8);
+  background: rgba(155,31,53,0.05);
+}
+
+/* ═════════ NAV ═════════ */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 24px 48px;
+  transition: background .5s, backdrop-filter .5s, padding .4s, border-color .5s;
+  border-bottom:1px solid transparent;
+}
+nav.scrolled{
+  background: rgba(5,3,10,0.82);
+  backdrop-filter: blur(24px) saturate(140%);
+  padding: 14px 48px;
+  border-bottom-color: rgba(155,31,53,0.18);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:1.5rem; font-weight:400;
+  letter-spacing:0.18em; text-decoration:none; color:var(--ivory);
+}
+.nav-logo .dot{ color:var(--crimson); }
+.nav-links{ display:flex; gap:38px; list-style:none; }
+.nav-links a{
+  font-size:0.6rem; font-weight:300; letter-spacing:0.3em;
+  text-transform:uppercase; color:var(--ivory-dim); text-decoration:none;
+  position:relative; transition: color .3s;
+}
+.nav-links a::after{
+  content:''; position:absolute; left:0; right:0; bottom:-6px; height:1px;
+  background: var(--rose); transform:scaleX(0); transform-origin:left;
+  transition: transform .45s cubic-bezier(.22,1,.36,1);
+}
+.nav-links a:hover{ color:var(--ivory); }
+.nav-links a:hover::after{ transform:scaleX(1); }
+.nav-cta{
+  font-size:0.56rem; font-weight:300; letter-spacing:0.35em;
+  text-transform:uppercase; color:var(--ivory); text-decoration:none;
+  border:1px solid rgba(155,31,53,0.6); padding:11px 22px;
+  position:relative; overflow:hidden; transition: color .4s;
+}
+.nav-cta::before{
+  content:''; position:absolute; inset:0;
+  background:var(--crimson);
+  transform:translateY(101%);
+  transition: transform .5s cubic-bezier(.65,.05,.36,1);
+  z-index:-1;
+}
+.nav-cta:hover::before{ transform:translateY(0); }
+
+/* progress bar */
+.scroll-progress{
+  position:fixed; top:0; left:0; height:2px;
+  background: linear-gradient(to right, var(--crimson), var(--rose), var(--gold));
+  z-index:101;
+  width:0%;
+  transition: width .1s linear;
+}
+
+/* ═════════ HERO ═════════ */
+#hero{
+  position:relative;
+  height:100vh;
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.hero-bg{
+  position:absolute; inset:-10%;
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 10%, rgba(80,30,130,0.5) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 35% at 15% 75%, rgba(155,31,53,0.3) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 85% 65%, rgba(200,90,114,0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 30% at 60% 40%, rgba(196,160,96,0.08) 0%, transparent 55%),
+    linear-gradient(180deg, #0c0418 0%, #050310 50%, #08030f 100%);
+  will-change: transform;
+}
+.hero-bokeh{
+  position:absolute; inset:-10%;
+  background:
+    radial-gradient(circle 110px at 18% 35%, rgba(155,31,53,0.14) 0%, transparent 65%),
+    radial-gradient(circle 90px at 72% 25%, rgba(120,60,180,0.16) 0%, transparent 65%),
+    radial-gradient(circle 130px at 55% 70%, rgba(155,31,53,0.08) 0%, transparent 65%),
+    radial-gradient(circle 70px at 28% 65%, rgba(196,160,96,0.1) 0%, transparent 65%),
+    radial-gradient(circle 100px at 85% 55%, rgba(80,30,130,0.14) 0%, transparent 65%);
+  will-change: transform;
+}
+
+.hero-content{
+  position:relative; z-index:5;
+  text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:22px;
+}
+.hero-eyebrow{
+  font-size:0.6rem; font-weight:300; letter-spacing:0.55em;
+  text-transform:uppercase; color:var(--rose);
+  display:flex; align-items:center; gap:16px;
+  opacity:0; animation: fadeIn .9s .3s forwards;
+}
+.hero-eyebrow::before, .hero-eyebrow::after{
+  content:''; display:block; width:40px; height:1px;
+  background: linear-gradient(to right, transparent, var(--rose));
+}
+.hero-eyebrow::after{ background: linear-gradient(to left, transparent, var(--rose)); }
+
+.hero-title{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-weight:300;
+  font-size: clamp(4rem, 10vw, 10rem);
+  line-height:0.95;
+  letter-spacing:-0.02em;
+  color: var(--ivory);
+  display:flex; flex-wrap:wrap; justify-content:center;
+}
+.hero-title .word{ display:inline-flex; overflow:hidden; padding:0 0.05em; }
+.hero-title .letter{
+  display:inline-block;
+  transform: translateY(110%);
+  opacity:0;
+  animation: letterUp 1.1s cubic-bezier(.22,1,.36,1) forwards;
+}
+.hero-title .line-2 .letter{ color: var(--crimson); font-weight:400; }
+@keyframes letterUp{ to { transform:translateY(0); opacity:1; } }
+
+.hero-sub{
+  font-size:0.7rem; font-weight:200; letter-spacing:0.42em;
+  text-transform:uppercase; color:var(--ivory-dim);
+  opacity:0; animation: fadeIn 1s 1.4s forwards;
+}
+.hero-cta-wrap{
+  display:flex; gap:18px; margin-top:8px;
+  opacity:0; animation: fadeIn 1s 1.7s forwards;
+}
+.btn{
+  font-size:0.58rem; font-weight:300; letter-spacing:0.38em;
+  text-transform:uppercase; color:var(--ivory); text-decoration:none;
+  padding:16px 34px;
+  position:relative; overflow:hidden;
+  transition: color .4s;
+  border:1px solid transparent;
+}
+.btn-primary{
+  border-color: var(--crimson);
+  background: rgba(155,31,53,0.2);
+}
+.btn-primary::before{
+  content:''; position:absolute; inset:0; background: var(--crimson);
+  transform:translateY(101%);
+  transition: transform .5s cubic-bezier(.65,.05,.36,1);
+  z-index:-1;
+}
+.btn-primary:hover::before{ transform:translateY(0); }
+.btn-ghost{
+  border-color: rgba(237,227,216,0.22);
+  color: var(--ivory-dim);
+}
+.btn-ghost:hover{ border-color: var(--ivory); color: var(--ivory); }
+
+.hero-meta{
+  position:absolute; bottom:30px; left:48px; right:48px;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  z-index:6;
+  opacity:0; animation: fadeIn 1s 2s forwards;
+}
+.hero-meta-item{
+  font-size:0.52rem; letter-spacing:0.35em; text-transform:uppercase;
+  color: var(--ivory-dim); font-weight:200;
+}
+.hero-meta-item strong{
+  display:block; font-weight:400; color:var(--ivory);
+  font-size:0.68rem; margin-top:4px; letter-spacing:0.25em;
+}
+.scroll-hint{
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  font-size:0.5rem; letter-spacing:0.35em; text-transform:uppercase;
+  color: var(--ivory-dim);
+}
+.scroll-line{
+  width:1px; height:42px;
+  background: linear-gradient(to bottom, transparent, var(--rose));
+  animation: scrollBob 1.8s infinite;
+}
+@keyframes scrollBob{
+  0%,100%{ transform: scaleY(1) translateY(0); opacity:.4; }
+  50%{ transform: scaleY(1.3) translateY(4px); opacity:1; }
+}
+@keyframes fadeIn{ to { opacity:1; } }
+
+/* ═════════ MARQUEE (after pinned section) ═════════ */
+.marquee{
+  height: 120px;
+  background: rgba(5,3,10,0.85);
+  border-block: 1px solid rgba(196,160,96,0.18);
+  display:flex; align-items:center;
+  overflow:hidden;
+  position:relative;
+  z-index:10;
+}
+.marquee-track{
+  display:flex; gap:64px;
+  white-space: nowrap;
+  animation: marquee 36s linear infinite;
+  padding-right: 64px;
+}
+.marquee-item{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: 2.6rem; font-weight:300;
+  color: var(--ivory-dim);
+  display:flex; align-items:center; gap: 64px;
+}
+.marquee-item::after{
+  content: '✦';
+  font-size: 1.2rem;
+  color: var(--crimson);
+}
+.marquee-item.accent{ color: var(--crimson); font-weight:400; }
+@keyframes marquee{
+  to { transform: translateX(-50%); }
+}
+
+/* ═════════ COCKTAIL MENU LIST ═════════ */
+#menu{
+  padding: 160px 48px;
+  position:relative;
+  overflow:hidden;
+}
+.menu-head{
+  max-width: 1400px; margin: 0 auto 80px;
+  display:flex; justify-content:space-between; align-items:flex-end; gap:60px;
+}
+.menu-head .tag{
+  font-size:0.58rem; font-weight:300; letter-spacing:0.5em;
+  text-transform:uppercase; color: var(--rose);
+  display:flex; align-items:center; gap:14px; margin-bottom:20px;
+}
+.menu-head .tag::before{ content:''; width:50px; height:1px; background: var(--rose); }
+.menu-head h2{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  font-weight:300; line-height:1.05; color: var(--ivory);
+}
+.menu-head h2 em{ color: var(--crimson); }
+.menu-head p{
+  font-size:0.7rem; font-weight:200; letter-spacing:0.12em;
+  color: var(--ivory-dim); line-height:2.2;
+  max-width: 340px; text-align:right;
+}
+
+.menu-list{
+  max-width: 1200px; margin: 0 auto;
+  border-top: 1px solid rgba(196,160,96,0.18);
+}
+.menu-row{
+  position:relative;
+  display:grid;
+  grid-template-columns: 80px 1fr 120px;
+  gap: 40px;
+  padding: 38px 0;
+  border-bottom: 1px solid rgba(196,160,96,0.12);
+  align-items:center;
+  cursor: none;
+  transition: padding .5s cubic-bezier(.22,1,.36,1);
+}
+.menu-row::before{
+  content:''; position:absolute; inset: 0 -48px;
+  background: linear-gradient(90deg, transparent 0%, rgba(155,31,53,0.08) 30%, rgba(155,31,53,0.04) 70%, transparent 100%);
+  opacity: 0;
+  transition: opacity .5s;
+  z-index:-1;
+}
+.menu-row:hover::before{ opacity:1; }
+.menu-row:hover{ padding-left: 20px; padding-right: 20px; }
+.menu-num{
+  font-size: 0.58rem; letter-spacing: 0.35em;
+  color: var(--gold); font-family:'Montserrat',sans-serif; font-weight:300;
+}
+.menu-main{ display:flex; flex-direction:column; gap:8px; }
+.menu-name{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: 1.9rem; font-weight:400; color: var(--ivory);
+  line-height:1;
+  transition: color .4s;
+}
+.menu-row:hover .menu-name{ color: var(--rose); }
+.menu-desc{
+  font-size: 0.62rem; font-weight:200; letter-spacing:0.18em;
+  color: var(--ivory-dim); text-transform: uppercase;
+}
+.menu-price{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: 1.4rem; font-weight:400; color: var(--crimson);
+  text-align:right;
+}
+
+/* menu preview that floats beside row on hover */
+.menu-preview{
+  position: fixed;
+  top: 0; left: 0;
+  width: 220px; height: 280px;
+  pointer-events:none;
+  z-index: 80;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.9);
+  transition: opacity .3s, transform .3s cubic-bezier(.34,1.56,.64,1);
+  border: 1px solid rgba(196,160,96,0.4);
+  overflow:hidden;
+}
+.menu-preview.visible{ opacity:1; transform: translate(-50%, -50%) scale(1); }
+.menu-preview svg{ width:100%; height:100%; }
+/* ═════════ QUOTE ═════════ */
+#quote{
+  position:relative;
+  height: 90vh;
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  padding:0;
+}
+.quote-bg{
+  position:absolute; inset:-10%;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(120,60,180,0.45) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 40% at 50% 100%, rgba(155,31,53,0.3) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0414 0%, #120620 50%, #05030a 100%);
+}
+.quote-rays{
+  position:absolute; top:50%; left:50%;
+  width: 160vmax; height:160vmax;
+  transform: translate(-50%,-50%);
+  background:
+    conic-gradient(from 0deg,
+      transparent 0deg, rgba(196,160,96,0.06) 3deg, transparent 6deg,
+      transparent 40deg, rgba(155,31,53,0.08) 43deg, transparent 46deg,
+      transparent 80deg, rgba(200,90,114,0.05) 83deg, transparent 86deg,
+      transparent 120deg, rgba(196,160,96,0.05) 123deg, transparent 126deg,
+      transparent 180deg, rgba(200,90,114,0.06) 183deg, transparent 186deg,
+      transparent 240deg, rgba(196,160,96,0.04) 243deg, transparent 246deg,
+      transparent 300deg, rgba(155,31,53,0.06) 303deg, transparent 306deg);
+  animation: rayspin 120s linear infinite;
+}
+@keyframes rayspin{ to { transform: translate(-50%,-50%) rotate(360deg); } }
+.quote-text-wrap{
+  position:relative; z-index:2; text-align:center;
+  max-width: 1000px; padding: 0 48px;
+}
+.quote-small{
+  font-size:0.58rem; font-weight:300; letter-spacing:0.6em;
+  text-transform:uppercase; color: var(--rose);
+  display:flex; align-items:center; justify-content:center; gap:14px;
+  margin-bottom:28px;
+}
+.quote-small::before, .quote-small::after{
+  content:''; display:block; width:50px; height:1px;
+  background: linear-gradient(to right, transparent, var(--rose));
+}
+.quote-small::after{ background: linear-gradient(to left, transparent, var(--rose)); }
+.quote-main{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: clamp(2.6rem, 5.5vw, 6rem);
+  font-weight:300; line-height:1.1; color: var(--ivory);
+  margin-bottom: 22px;
+}
+.quote-main .accent{ color: var(--crimson); font-weight:400; display:block; white-space:nowrap; }
+.quote-sub{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: clamp(1.2rem, 2.3vw, 2rem);
+  font-weight:300; color: var(--ivory-dim);
+  margin-bottom: 38px;
+}
+.quote-credit{
+  font-size:0.56rem; font-weight:300; letter-spacing:0.45em;
+  text-transform:uppercase; color: var(--gold);
+  display:flex; align-items:center; justify-content:center; gap:14px;
+}
+.quote-credit::before{
+  content:''; display:block; width:40px; height:1px; background: var(--gold);
+}
+
+/* ═════════ EVENTS ═════════ */
+#events{
+  padding: 160px 48px;
+  position:relative;
+  overflow:hidden;
+}
+.events-head{
+  max-width: 1400px; margin: 0 auto 70px;
+  display:flex; justify-content:space-between; align-items:flex-end;
+}
+.events-head .tag{
+  font-size:0.58rem; font-weight:300; letter-spacing:0.5em;
+  text-transform:uppercase; color: var(--rose);
+  display:flex; align-items:center; gap:14px; margin-bottom:20px;
+}
+.events-head .tag::before{ content:''; width:50px; height:1px; background: var(--rose); }
+.events-head h2{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  font-weight:300; line-height:1.05; color: var(--ivory);
+}
+.events-head h2 em{ color: var(--crimson); }
+.events-head .all-events{
+  font-size:0.56rem; font-weight:300; letter-spacing:0.4em;
+  text-transform:uppercase; color: var(--ivory-dim); text-decoration:none;
+  border-bottom:1px solid rgba(196,160,96,0.3);
+  padding-bottom:8px;
+  transition: color .3s, border-color .3s;
+}
+.events-head .all-events:hover{ color: var(--ivory); border-color: var(--gold); }
+
+.events-grid{
+  max-width: 1400px; margin: 0 auto;
+  display:grid; grid-template-columns: repeat(3, 1fr); gap: 22px;
+}
+.event-card{
+  position:relative;
+  aspect-ratio:3/4.2;
+  border:1px solid rgba(196,160,96,0.18);
+  overflow:hidden;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  opacity:0;
+  transform: translateY(60px);
+  transition: opacity 1s cubic-bezier(.34,1.56,.64,1), transform 1s cubic-bezier(.34,1.56,.64,1);
+}
+.event-card.visible{ opacity:1; transform: translateY(0); }
+.event-card:nth-child(2).visible{ transition-delay: .12s; }
+.event-card:nth-child(3).visible{ transition-delay: .24s; }
+.event-art{ position:absolute; inset:0; z-index:1; }
+.ea-1{ background:
+  radial-gradient(ellipse 60% 70% at 50% 35%, rgba(196,160,96,0.25) 0%, transparent 60%),
+  linear-gradient(180deg, #180808 0%, #05030a 100%);
+}
+.ea-2{ background:
+  radial-gradient(ellipse 65% 70% at 55% 40%, rgba(155,31,53,0.4) 0%, transparent 60%),
+  linear-gradient(180deg, #1e0810 0%, #05030a 100%);
+}
+.ea-3{ background:
+  radial-gradient(ellipse 60% 70% at 50% 35%, rgba(120,60,180,0.4) 0%, transparent 60%),
+  linear-gradient(180deg, #130520 0%, #05030a 100%);
+}
+.event-art-glyph{
+  position:absolute; top:22%; left:50%;
+  transform: translate(-50%, -15%);
+  width:60%; height:auto;
+  opacity:0.8;
+}
+.event-overlay{
+  position:absolute; inset:0; z-index:2;
+  background: linear-gradient(to top, rgba(5,3,10,0.95) 10%, rgba(5,3,10,0.2) 50%, transparent 75%);
+}
+.event-date{
+  position:absolute; top:18px; left:18px; z-index:3;
+  padding:8px 12px;
+  border:1px solid var(--crimson);
+  background: rgba(5,3,10,0.75);
+  backdrop-filter: blur(4px);
+  text-align:center;
+}
+.event-date .d{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:1.7rem; font-weight:400; line-height:1;
+  color:var(--ivory); display:block;
+}
+.event-date .m{
+  font-size:0.48rem; letter-spacing:0.35em; text-transform:uppercase;
+  color: var(--rose); margin-top:3px;
+}
+.event-body{
+  position:relative; z-index:3;
+  padding:26px;
+}
+.event-tag{
+  font-size:0.5rem; letter-spacing:0.45em; text-transform:uppercase;
+  color: var(--gold); margin-bottom:8px;
+}
+.event-name{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:1.8rem; font-weight:400; line-height:1.1;
+  color:var(--ivory); margin-bottom:8px;
+}
+.event-detail{
+  font-size:0.56rem; letter-spacing:0.22em;
+  color:var(--ivory-dim); font-weight:200;
+  line-height:1.7;
+}
+.event-glow{
+  position:absolute; inset:0; z-index:1;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(155,31,53,0.25) 0%, transparent 70%);
+  opacity:0; transition: opacity .6s;
+}
+.event-card:hover .event-glow{ opacity:1; }
+
+/* ═════════ RESERVATION ═════════ */
+#reservation{
+  padding: 160px 48px;
+  position:relative; overflow:hidden;
+  text-align:center;
+}
+.res-ambient{
+  position:absolute; top:50%; left:50%;
+  width:800px; height:400px;
+  transform:translate(-50%,-50%);
+  background: radial-gradient(ellipse, rgba(120,60,180,0.2) 0%, rgba(155,31,53,0.1) 40%, transparent 70%);
+}
+.res-inner{ position:relative; z-index:2; max-width:720px; margin:0 auto; }
+.res-eyebrow{
+  font-size:0.58rem; font-weight:300; letter-spacing:0.6em;
+  text-transform:uppercase; color: var(--rose);
+  display:flex; align-items:center; justify-content:center; gap:14px;
+  margin-bottom:24px;
+}
+.res-eyebrow::before, .res-eyebrow::after{
+  content:''; display:block; width:40px; height:1px;
+  background: linear-gradient(to right, transparent, var(--rose));
+}
+.res-eyebrow::after{ background: linear-gradient(to left, transparent, var(--rose)); }
+.res-title{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: clamp(2.8rem, 6vw, 6rem);
+  font-weight:300; line-height:1;
+  color:var(--ivory); margin-bottom:14px;
+}
+.res-title em{ color:var(--crimson); }
+.res-sub{
+  font-size:0.68rem; font-weight:200; letter-spacing:0.28em;
+  color:var(--ivory-dim); margin-bottom:50px;
+}
+.res-form{
+  display:flex; gap:0; margin-bottom:50px;
+  position:relative;
+}
+.res-input{
+  flex:1;
+  background: rgba(237,227,216,0.04);
+  border: 1px solid rgba(237,227,216,0.12);
+  border-right:none;
+  padding: 17px 22px;
+  color:var(--ivory);
+  font-family:'Montserrat',sans-serif;
+  font-size:0.68rem; font-weight:200; letter-spacing:0.12em;
+  outline:none;
+  transition: border-color .3s, background .3s;
+}
+.res-input::placeholder{
+  color: rgba(237,227,216,0.3);
+  font-size:0.58rem; letter-spacing:0.25em; text-transform:uppercase;
+}
+.res-input:focus{
+  border-color: var(--crimson);
+  background: rgba(155,31,53,0.08);
+}
+.res-input:nth-child(2){ max-width: 200px; }
+.res-btn{
+  background: var(--crimson);
+  border: 1px solid var(--crimson);
+  color: var(--ivory);
+  font-family:'Montserrat',sans-serif;
+  font-size:0.58rem; font-weight:300; letter-spacing:0.4em;
+  text-transform:uppercase;
+  padding: 17px 38px;
+  transition: background .4s, border-color .4s;
+}
+.res-btn:hover{ background: var(--rose); border-color: var(--rose); }
+.res-info{
+  display:grid; grid-template-columns: repeat(3, 1fr); gap:20px;
+}
+.res-info-item{ text-align:center; }
+.res-info-item .lbl{
+  font-size:0.5rem; letter-spacing:0.45em; text-transform:uppercase;
+  color: var(--gold); margin-bottom:8px;
+}
+.res-info-item .val{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:1rem; font-weight:400; color:var(--ivory); 
+}
+
+.res-info-item .val a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* footer */
+footer{
+  border-top:1px solid rgba(237,227,216,0.08);
+  padding: 36px 48px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:40px;
+}
+.f-logo{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:1.2rem; font-weight:400; color:var(--ivory-dim);
+  letter-spacing:0.12em;
+}
+.f-copy{
+  font-size:0.48rem; letter-spacing:0.35em; text-transform:uppercase;
+  color: rgba(237,227,216,0.28); font-weight:200;
+}
+.f-socials{ display:flex; gap:26px; }
+.f-socials a{
+  font-size:0.5rem; letter-spacing:0.35em; text-transform:uppercase;
+  color: rgba(237,227,216,0.35); text-decoration:none; font-weight:300;
+  transition: color .3s;
+}
+.f-socials a:hover{ color: var(--rose); }
+
+.reveal{
+  opacity:0; transform: translateY(50px);
+  transition: opacity 1s cubic-bezier(.22,1,.36,1), transform 1s cubic-bezier(.22,1,.36,1);
+}
+.reveal.visible{ opacity:1; transform: translateY(0); }
+.rd-1{ transition-delay: .1s; }
+.rd-2{ transition-delay: .2s; }
+.rd-3{ transition-delay: .3s; }
+
+/* ═════════════════════════════════════════════════════
+   PHOTO SLOT SYSTEM
+   Each .photo holds a real <img> with an Unsplash vibe source.
+   If the image is missing/offline, the branded fallback shows.
+   Swap any image by replacing its src with a local file
+   (e.g. images/hero.jpg) — no other change needed.
+   ═════════════════════════════════════════════════════ */
+.photo{
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 30%, rgba(155,31,53,0.28) 0%, transparent 60%),
+    linear-gradient(140deg, #1a0a12 0%, #0a0610 55%, #12061a 100%);
+}
+.photo img{
+  position:absolute; inset:0; z-index:2;
+  width:100%; height:100%; object-fit:cover; display:block;
+  opacity:0; transition: opacity .9s cubic-bezier(.16,1,.3,1);
+}
+.photo img.loaded{ opacity:1; }
+.photo .ph-label{
+  position:absolute; inset:0; z-index:1;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:8px; text-align:center; padding:18px;
+  font-size:0.5rem; letter-spacing:0.4em; text-transform:uppercase;
+  color: rgba(237,227,216,0.4); font-weight:300;
+}
+.photo .ph-label svg{ width:26px; height:26px; opacity:0.5; }
+.photo.scrim::before{
+  content:''; position:absolute; inset:0; z-index:3; pointer-events:none;
+  background: linear-gradient(to top, rgba(5,3,10,0.92) 4%, rgba(5,3,10,0.35) 45%, transparent 72%);
+}
+
+/* ═════════ HERO photo layer ═════════ */
+.hero-photo{
+  position:absolute; inset:0; z-index:1; overflow:hidden;
+}
+.hero-photo img{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; opacity:0; transition: opacity 1.4s cubic-bezier(.16,1,.3,1);
+}
+.hero-photo img.loaded{ opacity:0.55; }
+.hero-photo::after{
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 35%, transparent 0%, rgba(5,3,10,0.45) 75%),
+    linear-gradient(180deg, rgba(5,3,10,0.55) 0%, rgba(5,3,10,0.25) 40%, rgba(5,3,10,0.85) 100%);
+}
+#hero .hero-bg{ z-index:0; }
+#hero .hero-bokeh{ z-index:0; }
+
+/* ═════════════════════════════════════════════════════
+   THE RITUAL — rebuilt as a photo-driven scroll story
+   ═════════════════════════════════════════════════════ */
+#ritual{ position:relative; height: 360vh; background: var(--bg); }
+.ritual-stage{
+  position:sticky; top:0; height:100vh; width:100%;
+  overflow:hidden; display:flex; align-items:flex-end;
+}
+.ritual-photos{ position:absolute; inset:0; z-index:1; }
+.ritual-photo{
+  position:absolute; inset:0;
+  opacity:0; transform: scale(1.06);
+  transition: opacity 1s cubic-bezier(.16,1,.3,1), transform 1.6s cubic-bezier(.16,1,.3,1);
+}
+.ritual-photo .photo{ width:100%; height:100%; }
+.ritual-photo.active{ opacity:1; transform: scale(1); }
+.ritual-scrim{
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:
+    linear-gradient(105deg, rgba(5,3,10,0.9) 0%, rgba(5,3,10,0.5) 42%, transparent 70%),
+    linear-gradient(to top, rgba(5,3,10,0.85) 6%, transparent 55%);
+}
+.ritual-content{
+  position:relative; z-index:3; width:100%;
+  padding: 0 48px 90px;
+  display:flex; align-items:flex-end; justify-content:space-between; gap:40px;
+}
+.ritual-steps2{ position:relative; max-width:560px; min-height:300px; flex:1; }
+.rstep{
+  position:absolute; left:0; bottom:0;
+  opacity:0; transform: translateY(28px);
+  transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  pointer-events:none;
+}
+.rstep.active{ opacity:1; transform: translateY(0); pointer-events:auto; }
+.rstep-tag{
+  font-size:0.58rem; font-weight:300; letter-spacing:0.5em;
+  text-transform:uppercase; color: var(--rose);
+  display:flex; align-items:center; gap:14px; margin-bottom:20px;
+}
+.rstep-tag::before{ content:''; width:46px; height:1px; background: var(--rose); }
+.rstep-title{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size: clamp(2.6rem, 5.5vw, 4.6rem); font-weight:300; line-height:1.02;
+  color: var(--ivory); margin-bottom: 22px;
+}
+.rstep-title em{ color: var(--crimson); }
+.rstep-body{
+  font-size:0.74rem; font-weight:200; letter-spacing:0.08em;
+  line-height:2; color: var(--ivory-dim); max-width: 440px;
+}
+.ritual-rail{
+  display:flex; flex-direction:column; align-items:flex-end; gap:18px;
+  flex-shrink:0; padding-bottom:6px;
+}
+.ritual-count{
+  font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:1.1rem; color: var(--ivory-dim); letter-spacing:0.1em;
+}
+.ritual-count em{ color: var(--ivory); font-size:1.6rem; }
+.ritual-bars{ display:flex; flex-direction:column; gap:10px; align-items:flex-end; }
+.ritual-bar{
+  width:36px; height:2px; background: rgba(237,227,216,0.18);
+  transition: background .4s, width .4s cubic-bezier(.16,1,.3,1);
+}
+.ritual-bar.active{ background: var(--rose); width:58px; }
+
+/* ═════════ EVENTS photo ═════════ */
+.event-img{
+  position:absolute; inset:0; z-index:2;
+  width:100%; height:100%; object-fit:cover; display:block;
+  opacity:0; transition: opacity .9s cubic-bezier(.16,1,.3,1), transform 1.2s cubic-bezier(.16,1,.3,1);
+}
+.event-img.loaded{ opacity:1; }
+.event-card:hover .event-img.loaded{ transform: scale(1.05); }
+
+/* ═════════ MENU preview = real photo ═════════ */
+.menu-preview .photo{ width:100%; height:100%; }
+.menu-preview .ph-label{ font-size:0.46rem; }
+
+/* ═════════ QUOTE photo ═════════ */
+.quote-photo{ position:absolute; inset:0; z-index:0; overflow:hidden; }
+.quote-photo img{
+  position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  opacity:0; transition: opacity 1.4s cubic-bezier(.16,1,.3,1);
+}
+.quote-photo img.loaded{ opacity:0.38; }
+#quote .quote-bg{ z-index:1; opacity:0.86; }
+#quote .quote-rays{ z-index:1; }
+#quote .quote-text-wrap{ z-index:3; }
+
+/* ═════════════════════════════════════════════════════
+   TOUCH / NO-HOVER — disable custom cursor on mobile
+   ═════════════════════════════════════════════════════ */
+@media (hover: none), (pointer: coarse){
+  body, a, button, .menu-row{ cursor: auto !important; }
+  #cursor{ display:none !important; }
+}
+
+/* ═════════════════════════════════════════════════════
+   RESPONSIVE  (mobile-first overrides)
+   ═════════════════════════════════════════════════════ */
+@media (max-width: 1024px){
+  nav{ padding: 20px 28px; }
+  nav.scrolled{ padding: 12px 28px; }
+  #menu, #events, #reservation{ padding: 110px 28px; }
+  .hero-meta{ left:28px; right:28px; }
+  .ritual-content{ padding: 0 32px 70px; }
+  .events-grid{ gap:16px; }
+}
+
+@media (max-width: 820px){
+  .nav-links{ display:none; }
+  nav{ padding: 18px 22px; }
+  nav.scrolled{ padding: 12px 22px; }
+
+  /* hero */
+  #hero{ height: 92vh; height: 92svh; }
+  .hero-meta{ left:22px; right:22px; bottom:22px; }
+  .hero-meta .hero-meta-item{ display:none; }
+  .scroll-hint{ margin:0 auto; }
+  .hero-cta-wrap{ flex-direction:column; width:100%; max-width:280px; }
+  .hero-cta-wrap .btn{ text-align:center; }
+
+  /* ritual: stack text below image */
+  #ritual{ height: 320vh; }
+  .ritual-content{
+    flex-direction:column; align-items:flex-start; gap:22px;
+    padding: 0 22px 48px;
+  }
+  .ritual-steps2{ min-height: 240px; width:100%; }
+  .ritual-rail{
+    flex-direction:row; align-items:center; gap:14px;
+    width:100%; justify-content:space-between; order:-1;
+  }
+  .ritual-bars{ flex-direction:row; align-items:center; }
+  .ritual-bar.active{ width:40px; }
+  .ritual-scrim{
+    background:
+      linear-gradient(to top, rgba(5,3,10,0.94) 12%, rgba(5,3,10,0.4) 55%, transparent 80%);
+  }
+
+  /* menu: 2-col rows, no floating preview */
+  #menu{ padding: 90px 22px; }
+  .menu-head{ flex-direction:column; align-items:flex-start; gap:22px; margin-bottom:50px; }
+  .menu-head p{ text-align:left; max-width:none; }
+  .menu-row{ grid-template-columns: 1fr auto; gap:18px 20px; padding: 26px 0; }
+  .menu-num{ grid-column:1; grid-row:1; }
+  .menu-main{ grid-column:1; grid-row:2; }
+  .menu-price{ grid-column:2; grid-row:1 / span 2; align-self:center; }
+  .menu-name{ font-size:1.5rem; }
+  .menu-row:hover{ padding-left:0; padding-right:0; }
+  .menu-preview{ display:none !important; }
+
+  /* events: single column */
+  .events-head{ flex-direction:column; align-items:flex-start; gap:18px; }
+  .events-grid{ grid-template-columns: 1fr; gap:18px; }
+  .event-card{ aspect-ratio: 3/3.6; }
+
+  /* quote */
+  #quote{ height: 80vh; height: 80svh; }
+
+  /* reservation */
+  #reservation{ padding: 90px 22px; }
+  .res-form{ flex-direction:column; gap:12px; }
+  .res-input, .res-input:nth-child(2){ max-width:none; border-right:1px solid rgba(237,227,216,0.12); }
+  .res-btn{ width:100%; padding: 16px; }
+  .res-info{ grid-template-columns: 1fr; gap:24px; text-align:center; }
+
+  /* footer + marquee */
+  footer{ flex-direction:column; gap:18px; text-align:center; padding: 32px 22px; }
+  .marquee{ height: 88px; }
+  .marquee-item{ font-size: 1.9rem; gap:44px; }
+  .marquee-track{ gap:44px; }
+}
+
+@media (max-width: 480px){
+  .hero-eyebrow{ font-size:0.52rem; letter-spacing:0.32em; }
+  .hero-eyebrow::before, .hero-eyebrow::after{ width:24px; }
+  .hero-sub{ font-size:0.58rem; letter-spacing:0.28em; }
+  .rstep-body{ font-size:0.72rem; line-height:1.9; }
+  .menu-head h2, .events-head h2{ font-size: 2.4rem; }
+  .marquee-item{ font-size: 1.6rem; }
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  .quote-rays{ animation:none; }
+}
+/* ───── nav toggle + mobile menu ───── */
+.nav-toggle{ display:none; width:30px; height:18px; position:relative; z-index:200; cursor:pointer; }
+.nav-toggle span{ position:absolute; left:0; right:0; height:1.5px; background:var(--ivory);
+  transition: transform .4s cubic-bezier(.16,1,.3,1), opacity .3s; }
+.nav-toggle span:nth-child(1){ top:0; }
+.nav-toggle span:nth-child(2){ top:50%; transform:translateY(-50%); }
+.nav-toggle span:nth-child(3){ bottom:0; }
+.nav-toggle.open span:nth-child(1){ top:50%; transform:translateY(-50%) rotate(45deg); }
+.nav-toggle.open span:nth-child(2){ opacity:0; }
+.nav-toggle.open span:nth-child(3){ bottom:auto; top:50%; transform:translateY(-50%) rotate(-45deg); }
+.mobile-menu{ position:fixed; inset:0; z-index:150; background:rgba(5,3,10,0.97);
+  backdrop-filter:blur(22px); display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:28px; opacity:0; pointer-events:none; transition:opacity .5s; }
+.mobile-menu.open{ opacity:1; pointer-events:auto; }
+.mobile-menu a{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2rem;
+  color:var(--ivory); text-decoration:none; letter-spacing:0.04em; }
+.mobile-menu a.mm-cta{ font-family:'Montserrat',sans-serif; font-style:normal; font-size:0.6rem;
+  letter-spacing:0.35em; text-transform:uppercase; border:1px solid var(--crimson);
+  padding:14px 32px; margin-top:12px; color:var(--ivory); }
+@media (max-width:820px){ .nav-toggle{ display:block; } }
+
+/* ───── About / The Place ───── */
+#about{ padding:140px 48px; position:relative; }
+.about-grid{ max-width:1400px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr;
+  gap:70px; align-items:center; }
+.about-photo{ aspect-ratio:4/5; border:1px solid rgba(196,160,96,0.18); overflow:hidden; }
+.about-photo .photo{ width:100%; height:100%; }
+.about-copy .tag{ font-size:0.58rem; font-weight:300; letter-spacing:0.5em; text-transform:uppercase;
+  color:var(--rose); display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+.about-copy .tag::before{ content:''; width:50px; height:1px; background:var(--rose); }
+.about-copy h2{ font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:clamp(2.4rem,4.5vw,4rem); font-weight:300; line-height:1.05; color:var(--ivory); margin-bottom:26px; }
+.about-copy h2 em{ color:var(--crimson); }
+.about-copy p{ font-size:0.74rem; font-weight:200; letter-spacing:0.06em; line-height:2.1;
+  color:var(--ivory-dim); max-width:460px; margin-bottom:42px; }
+.about-stats{ display:flex; gap:46px; }
+.about-stat .n{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.6rem;
+  color:var(--ivory); line-height:1; }
+.about-stat .l{ font-size:0.5rem; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold); margin-top:8px; }
+@media (max-width:820px){ #about{ padding:90px 22px; } .about-grid{ grid-template-columns:1fr; gap:32px; }
+  .about-photo{ aspect-ratio:4/3; } .about-stats{ gap:30px; } .about-stat .n{ font-size:2rem; } }
+
+/* ───── Gallery / The Nights ───── */
+#gallery{ padding:140px 48px; position:relative; }
+.gallery-head{ max-width:1400px; margin:0 auto 56px; display:flex; justify-content:space-between;
+  align-items:flex-end; gap:30px; }
+.gallery-head .tag{ font-size:0.58rem; font-weight:300; letter-spacing:0.5em; text-transform:uppercase;
+  color:var(--rose); display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+.gallery-head .tag::before{ content:''; width:50px; height:1px; background:var(--rose); }
+.gallery-head h2{ font-family:'Cormorant Garamond',serif; font-style:italic;
+  font-size:clamp(2.4rem,4.5vw,4rem); font-weight:300; color:var(--ivory); }
+.gallery-head h2 em{ color:var(--crimson); }
+.gallery-link{ font-size:0.56rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--ivory-dim);
+  text-decoration:none; border-bottom:1px solid rgba(196,160,96,0.3); padding-bottom:8px; white-space:nowrap;
+  transition:color .3s, border-color .3s; }
+.gallery-link:hover{ color:var(--ivory); border-color:var(--gold); }
+.gallery-grid{ max-width:1400px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:200px; gap:14px; }
+.gallery-cell{ overflow:hidden; border:1px solid rgba(196,160,96,0.14); position:relative; }
+.gallery-cell .photo{ width:100%; height:100%; }
+.gallery-cell.tall{ grid-row:span 2; }
+.gallery-cell.wide{ grid-column:span 2; }
+.gallery-cell .photo img{ transition: opacity .9s cubic-bezier(.16,1,.3,1), transform 1.3s cubic-bezier(.16,1,.3,1) !important; }
+.gallery-cell:hover .photo img.loaded{ transform:scale(1.07); }
+@media (max-width:820px){ #gallery{ padding:90px 22px; }
+  .gallery-head{ flex-direction:column; align-items:flex-start; gap:16px; }
+  .gallery-grid{ grid-template-columns:repeat(2,1fr); grid-auto-rows:150px; gap:10px; }
+  .gallery-cell.tall{ grid-row:span 1; } }
+
+/* ───── a11y focus + press feedback (emil-design-eng) ───── */
+a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid var(--rose); outline-offset:3px; }
+.btn:active, .nav-cta:active, .res-btn:active, .mobile-menu a.mm-cta:active{ transform:translateY(1px); }
+/* ── logo mark ── */
+.nav-logo{ display:flex; align-items:center; gap:12px; }
+.logo-mark{ width:42px; height:auto; color:var(--ivory); flex-shrink:0; display:block;
+  transition: transform .6s cubic-bezier(.16,1,.3,1); }
+.nav-logo:hover .logo-mark{ transform: rotate(-4deg) scale(1.06); }
+.logo-word{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.5rem;
+  font-weight:400; letter-spacing:0.18em; }
+.f-logo{ display:inline-flex; align-items:center; gap:10px; }
+.f-logo .logo-mark{ width:28px; color:var(--ivory-dim); }
+
+/* ── staggered reveals ── */
+.reveal-stagger > *{ opacity:0; transform:translateY(26px);
+  transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+.reveal-stagger.visible > *{ opacity:1; transform:translateY(0); }
+.gallery-cell{ opacity:0; transform:translateY(34px) scale(.985);
+  transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+.gallery-cell.visible{ opacity:1; transform:translateY(0) scale(1); }
+
+/* ── magnetic buttons + parallax ── */
+.btn, .nav-cta, .res-btn{ transition: color .4s, background .4s, border-color .4s,
+  transform .5s cubic-bezier(.16,1,.3,1); will-change: transform; }
+.about-photo .photo img{ top:-9%; bottom:auto; height:118%; will-change: transform; }
+[data-parallax]{ will-change: transform; }
+@media (prefers-reduced-motion: reduce){
+  .about-photo .photo img{ top:0; height:100%; transform:none !important; }
+  [data-parallax]{ transform:none !important; }
+}
+/* ── menu: desktop floating preview + caption ── */
+.menu-preview{ width:232px; height:auto; border:none; }
+.menu-preview .photo{ height:284px; border:1px solid var(--cocktail, rgba(196,160,96,0.5)); border-bottom:none; }
+.mp-cap{ background:rgba(5,3,10,0.94); border:1px solid var(--cocktail,#c4a060); border-top:none;
+  padding:13px 15px; display:flex; flex-direction:column; gap:7px; }
+.mp-name{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.1rem; color:var(--ivory); line-height:1; }
+.mp-tags{ font-size:0.46rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--ivory-dim); line-height:1.4; }
+
+/* ── menu: mobile tap-to-reveal ── */
+.menu-toggle{ display:none; }
+.menu-reveal{ max-height:0; overflow:hidden; transition:max-height .55s cubic-bezier(.16,1,.3,1); }
+.menu-reveal > .menu-reveal-pad{ overflow:hidden; }
+.menu-reveal.open{ /* height set inline by JS */ }
+.menu-reveal-inner{ padding:2px 0 30px; display:grid; grid-template-columns:118px 1fr; gap:22px; align-items:center; }
+.menu-reveal-photo{ aspect-ratio:3/4; overflow:hidden; position:relative; border:1px solid var(--gold); }
+.menu-reveal-photo .photo{ width:100%; height:100%; }
+.menu-reveal-photo img{ transition:opacity .8s cubic-bezier(.16,1,.3,1) !important; }
+.menu-reveal.open .menu-reveal-photo img.loaded{ animation:kenburns 7s ease-out forwards; }
+.menu-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+.menu-tag{ font-size:0.52rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--ivory-dim);
+  border:1px solid rgba(196,160,96,0.3); padding:7px 14px; border-radius:30px; }
+@keyframes kenburns{ from{ transform:scale(1.14); } to{ transform:scale(1); } }
+
+/* ── mobile cocktail bottom-sheet ── */
+.cocktail-sheet{ position:fixed; inset:0; z-index:300; visibility:hidden; }
+.cocktail-sheet.open{ visibility:visible; }
+.cs-backdrop{ position:absolute; inset:0; background:rgba(5,3,10,0.72); backdrop-filter:blur(6px);
+  opacity:0; transition:opacity .45s ease; }
+.cocktail-sheet.open .cs-backdrop{ opacity:1; }
+.cs-panel{ position:absolute; left:0; right:0; bottom:0;
+  background:linear-gradient(180deg,#0d0712 0%,#08040d 100%);
+  border-top:1px solid var(--cocktail,#c4a060); border-radius:24px 24px 0 0;
+  padding:14px 22px calc(30px + env(safe-area-inset-bottom));
+  transform:translateY(100%); transition:transform .5s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 -30px 70px -24px rgba(0,0,0,0.75); }
+.cocktail-sheet.open .cs-panel{ transform:translateY(0); }
+.cs-grip{ width:44px; height:4px; border-radius:4px; background:rgba(237,227,216,0.25); margin:0 auto 18px; }
+.cs-photo{ aspect-ratio:16/10; overflow:hidden; position:relative;
+  border:1px solid var(--cocktail,rgba(196,160,96,0.3)); }
+.cs-photo .photo{ width:100%; height:100%; }
+.cocktail-sheet.open .cs-photo img.loaded{ animation:kenburns 7s ease-out forwards; }
+.cs-body{ padding-top:22px; }
+.cs-num{ font-size:0.5rem; letter-spacing:0.35em; text-transform:uppercase; color:var(--gold); }
+.cs-name{ font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:400;
+  font-size:2.1rem; color:var(--ivory); line-height:1; margin:9px 0 16px; }
+.cs-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.cs-foot{ display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.cs-price{ font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.6rem; color:var(--crimson); }
+.cs-close{ font-size:0.56rem; letter-spacing:0.32em; text-transform:uppercase; color:var(--ivory-dim);
+  border:1px solid rgba(237,227,216,0.2); padding:13px 26px; transition:color .3s, border-color .3s; }
+.cs-close:hover{ color:var(--ivory); border-color:var(--rose); }
+@media (min-width:821px){ .cocktail-sheet{ display:none; } }
+@media (min-width:821px){ .menu-reveal{ display:none !important; } }
+@media (max-width:820px){
+  .menu-row{ transition:background .4s; }
+  .menu-row.open{ background:rgba(155,31,53,0.05); }
+  .menu-toggle{ display:flex; align-items:center; justify-content:center; position:absolute;
+    right:2px; bottom:24px; width:24px; height:24px; }
+  .menu-toggle span{ position:absolute; width:13px; height:1.5px; background:var(--rose);
+    transition:transform .45s cubic-bezier(.16,1,.3,1); }
+  .menu-toggle span:nth-child(2){ transform:rotate(90deg); }
+  .menu-row.open .menu-toggle span:nth-child(2){ transform:rotate(0deg); }
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<div id="cursor">
+  <div id="c-glow"></div>
+  <div id="c-ring"></div>
+  <div id="c-dot"></div>
+</div>
+
+<!-- progress -->
+<div class="scroll-progress" id="scroll-progress"></div>
+
+<!-- ═════════ NAV ═════════ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo" aria-label="Mirador home">
+    <svg class="logo-mark" viewBox="0 0 44 24" aria-hidden="true">
+      <path d="M3 12 Q22 1 41 12 Q22 23 3 12 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.85"/>
+      <circle cx="22" cy="12" r="5.4" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.7"/>
+      <circle cx="22" cy="12" r="2.2" fill="var(--crimson)"/>
+    </svg>
+    <span class="logo-word">Mirador</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">The Place</a></li>
+    <li><a href="#ritual">The Ritual</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#reservation">Contact</a></li>
+  </ul>
+  <a href="#reservation" class="nav-cta">Reserve</a>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#about">The Place</a>
+  <a href="#ritual">The Ritual</a>
+  <a href="#menu">Menu</a>
+  <a href="#events">Events</a>
+  <a href="#reservation">Contact</a>
+  <a href="#reservation" class="mm-cta">Reserve</a>
+</div>
+
+<!-- ═════════ HERO ═════════ -->
+<section id="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-bokeh" id="hero-bokeh"></div>
+  <div class="hero-photo">
+    <img data-slot="hero" alt="Mirador rooftop terrace at dusk"
+         src="https://images.unsplash.com/photo-1485872299829-c673f5194813?w=1600&q=80&auto=format&fit=crop">
+  </div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Bucharest &middot; Est. 2019</p>
+    <h1 class="hero-title" id="hero-title">
+      <span class="word">Above</span>
+      <span class="word">the</span>
+      <span class="word line-2">City</span>
+    </h1>
+    <p class="hero-sub">Rooftop · Cocktails · Cinematic nights</p>
+    <div class="hero-cta-wrap">
+      <a href="#reservation" class="btn btn-primary">Reserve Tonight</a>
+      <a href="#ritual" class="btn btn-ghost">The Ritual</a>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span>Tonight</span>
+      <strong>17:00 → 02:00</strong>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll to begin</span>
+      <div class="scroll-line"></div>
+    </div>
+    <div class="hero-meta-item" style="text-align:right;">
+      <span>Coordinates</span>
+      <strong>44.4386° N · 26.1025° E</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ THE RITUAL (pinned scroll) ═════════ -->
+<!-- --------- THE RITUAL � photo-driven scroll story --------- -->
+<!-- ABOUT / THE PLACE -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-copy reveal">
+      <p class="tag">The Place</p>
+      <h2>A view that <em>rewrites the evening.</em></h2>
+      <p>Six floors above the old centre, the city unfolds beneath you: the Palace lit gold, rooftops fading into the hills, the river catching the last of the light. From golden hour to two in the morning, the room changes with the sky.</p>
+      <div class="about-stats reveal-stagger">
+        <div class="about-stat"><div class="n">6</div><div class="l">Floors up</div></div>
+        <div class="about-stat"><div class="n">280&deg;</div><div class="l">City view</div></div>
+        <div class="about-stat"><div class="n">2019</div><div class="l">Open since</div></div>
+      </div>
+    </div>
+    <div class="about-photo reveal rd-1">
+      <div class="photo">
+        <img loading="lazy" decoding="async" data-slot="about" data-parallax="0.06" alt="Mirador rooftop terrace and skyline"
+             src="https://images.unsplash.com/photo-1521992137298-0249aa7eb66d?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+        <span class="ph-label">Photo slot &middot; The Terrace</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ritual">
+  <div class="ritual-stage">
+
+    <div class="ritual-photos">
+      <div class="ritual-photo active" data-step="0">
+        <div class="photo scrim">
+          <img loading="lazy" decoding="async" data-slot="ritual-1" alt="Pouring the spirit"
+               src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=1600&q=80&auto=format&fit=crop">
+          <span class="ph-label">Photo slot � The Spirit</span>
+        </div>
+      </div>
+      <div class="ritual-photo" data-step="1">
+        <div class="photo scrim">
+          <img loading="lazy" decoding="async" data-slot="ritual-2" alt="The shake"
+               src="https://images.unsplash.com/photo-1536935338788-846bb9981813?w=1600&q=80&auto=format&fit=crop">
+          <span class="ph-label">Photo slot � The Shake</span>
+        </div>
+      </div>
+      <div class="ritual-photo" data-step="2">
+        <div class="photo scrim">
+          <img loading="lazy" decoding="async" data-slot="ritual-3" alt="The pour"
+               src="https://images.unsplash.com/photo-1574096079513-d8259312b785?w=1600&q=80&auto=format&fit=crop">
+          <span class="ph-label">Photo slot � The Pour</span>
+        </div>
+      </div>
+      <div class="ritual-photo" data-step="3">
+        <div class="photo scrim">
+          <img loading="lazy" decoding="async" data-slot="ritual-4" alt="Served cocktail"
+               src="https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=1600&q=80&auto=format&fit=crop">
+          <span class="ph-label">Photo slot � Served</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ritual-scrim"></div>
+
+    <div class="ritual-content">
+      <div class="ritual-steps2">
+        <article class="rstep active" data-step="0">
+          <p class="rstep-tag">01 � Spirit</p>
+          <h2 class="rstep-title">The soul <em>of the drink.</em></h2>
+          <p class="rstep-body">Mezcal, house aged six months in our rooftop cellar. Smoke, earth, a trace of something floral. We pour it generously, because restraint is not the Mirador way.</p>
+        </article>
+        <article class="rstep" data-step="1">
+          <p class="rstep-tag">02 � Shake</p>
+          <h2 class="rstep-title">Twelve seconds <em>of certainty.</em></h2>
+          <p class="rstep-body">The shake is performance, a contract between bartender and guest. Twelve hard seconds, no second guessing. You hear the ice change pitch the moment it is ready.</p>
+        </article>
+        <article class="rstep" data-step="2">
+          <p class="rstep-tag">03 � Pour</p>
+          <h2 class="rstep-title">From cloud <em>to crystal.</em></h2>
+          <p class="rstep-body">Double strained into a chilled coupe in a single high arc. The foam settles, the colour deepens, and what was chaos in the tin becomes clarity in the glass.</p>
+        </article>
+        <article class="rstep" data-step="3">
+          <p class="rstep-tag">04 � Serve</p>
+          <h2 class="rstep-title">Yours, <em>entirely.</em></h2>
+          <p class="rstep-body">A citrus twist, a nod, a small bow. The first sip is yours to find. We have already given it ours. Welcome to Mirador.</p>
+        </article>
+      </div>
+
+      <div class="ritual-rail">
+        <span class="ritual-count"><em id="ritual-cur">01</em> / 04</span>
+        <div class="ritual-bars">
+          <div class="ritual-bar active"></div>
+          <div class="ritual-bar"></div>
+          <div class="ritual-bar"></div>
+          <div class="ritual-bar"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═════════ MARQUEE ═════════ -->
+<div class="marquee">
+  <div class="marquee-track">
+    <span class="marquee-item">Twelve Seconds of Certainty</span>
+    <span class="marquee-item accent">Mirador · Above the City</span>
+    <span class="marquee-item">Rooftop · Bucharest</span>
+    <span class="marquee-item accent">Crafted Cocktails</span>
+    <span class="marquee-item">Twelve Seconds of Certainty</span>
+    <span class="marquee-item accent">Mirador · Above the City</span>
+    <span class="marquee-item">Rooftop · Bucharest</span>
+    <span class="marquee-item accent">Crafted Cocktails</span>
+  </div>
+</div>
+
+<!-- ═════════ MENU ═════════ -->
+<section id="menu">
+  <div class="menu-head">
+    <div class="reveal">
+      <p class="tag">The List · 2026</p>
+      <h2>Our<br><em>Cocktails</em></h2>
+    </div>
+    <p class="reveal rd-1">Each creation is a story in a glass — drawn from the city&rsquo;s light, the night&rsquo;s energy, and our mixologist&rsquo;s imagination.</p>
+  </div>
+
+  <div class="menu-list reveal-stagger" id="menu-list">
+    <div class="menu-row" data-preview="1">
+      <span class="menu-num">N° 01</span>
+      <div class="menu-main">
+        <span class="menu-name">Rouge Mirador</span>
+        <span class="menu-desc">Pomegranate · Champagne · Rose · Mint</span>
+      </div>
+      <span class="menu-price">48 lei</span>
+    </div>
+    <div class="menu-row" data-preview="2">
+      <span class="menu-num">N° 02</span>
+      <div class="menu-main">
+        <span class="menu-name">Violet Nights</span>
+        <span class="menu-desc">Gin · Lavender · Elderflower · Tonic</span>
+      </div>
+      <span class="menu-price">52 lei</span>
+    </div>
+    <div class="menu-row" data-preview="3">
+      <span class="menu-num">N&deg; 03</span>
+      <div class="menu-main">
+        <span class="menu-name">L&rsquo;&Eacute;clat Dor&eacute;</span>
+        <span class="menu-desc">Cognac &middot; Saffron &middot; Honey &middot; Bitters</span>
+      </div>
+      <span class="menu-price">58 lei</span>
+    </div>
+    <div class="menu-row" data-preview="4">
+      <span class="menu-num">N° 04</span>
+      <div class="menu-main">
+        <span class="menu-name">Smoke &amp; Citrus</span>
+        <span class="menu-desc">Mezcal · Lime · House Agave · Ancho</span>
+      </div>
+      <span class="menu-price">54 lei</span>
+    </div>
+    <div class="menu-row" data-preview="5">
+      <span class="menu-num">N° 05</span>
+      <div class="menu-main">
+        <span class="menu-name">Garden Cut</span>
+        <span class="menu-desc">Cucumber · Basil · Vodka · Lime · Soda</span>
+      </div>
+      <span class="menu-price">46 lei</span>
+    </div>
+    <div class="menu-row" data-preview="6">
+      <span class="menu-num">N° 06</span>
+      <div class="menu-main">
+        <span class="menu-name">Terrace Negroni</span>
+        <span class="menu-desc">Campari · Vermouth · Orange Oil · Gold Leaf</span>
+      </div>
+      <span class="menu-price">56 lei</span>
+    </div>
+  </div>
+
+  <!-- floating preview -->
+  <div class="menu-preview" id="menu-preview">
+    <div id="preview-frame"></div>
+  </div>
+</section>
+
+<!-- ═════════ QUOTE ═════════ -->
+<section id="quote">
+  <div class="quote-bg"></div>
+  <div class="quote-photo"><img loading="lazy" decoding="async" data-slot="quote" alt="Mirador rooftop evening" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=80&auto=format&fit=crop"></div>
+  <div class="quote-rays"></div>
+  <div class="quote-text-wrap" id="quote-text-wrap">
+    <p class="quote-small">The Mirador Promise</p>
+    <h2 class="quote-main">Not just dinner.<span class="accent">A Mirador Experience.</span></h2>
+    <p class="quote-sub">Where evenings turn into unforgettable memories.</p>
+    <p class="quote-credit">— Tonight, on the rooftop</p>
+  </div>
+</section>
+
+<!-- ═════════ EVENTS ═════════ -->
+<section id="events">
+  <div class="events-head">
+    <div class="reveal">
+      <p class="tag">What&rsquo;s on</p>
+      <h2>Upcoming<br><em>Nights</em></h2>
+    </div>
+    <a href="#" class="all-events reveal rd-1">All Events →</a>
+  </div>
+
+  <div class="events-grid">
+    <div class="event-card" data-reveal>
+      <div class="event-art ea-1">
+        <img loading="lazy" decoding="async" class="event-img" data-slot="event-1" alt="Live session night" src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=900&q=80&auto=format&fit=crop">
+        <svg class="event-art-glyph" viewBox="0 0 200 200">
+          <defs>
+            <radialGradient id="moonG" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0" stop-color="#e8c078" stop-opacity="0.5"/>
+              <stop offset="1" stop-color="#c4a060" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="100" cy="100" r="100" fill="url(#moonG)"/>
+          <circle cx="100" cy="100" r="60" fill="none" stroke="#c4a060" stroke-width="0.6" opacity="0.6"/>
+          <circle cx="100" cy="100" r="40" fill="#c4a060" opacity="0.1"/>
+          <circle cx="100" cy="100" r="2" fill="#c4a060"/>
+        </svg>
+        <div style="position:absolute; bottom:30%; left:0; right:0; text-align:center;">
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2rem; color:var(--ivory); font-weight:400; line-height:0.95;">Rouge</p>
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:.95rem; color:var(--rose); margin-top:2px;">in the Sky</p>
+          <p style="font-size:0.48rem; letter-spacing:0.4em; color:var(--gold); margin-top:8px; text-transform:uppercase;">Live Session</p>
+        </div>
+      </div>
+      <div class="event-overlay"></div>
+      <div class="event-glow"></div>
+      <div class="event-date"><span class="d">03</span><span class="m">May</span></div>
+      <div class="event-body">
+        <p class="event-tag">Jazz · Live Music</p>
+        <p class="event-name">Rouge in the Sky</p>
+        <p class="event-detail">20:00 · Rooftop Terrace<br>Free Entry · Reservation Required</p>
+      </div>
+    </div>
+
+    <div class="event-card" data-reveal>
+      <div class="event-art ea-2">
+        <img loading="lazy" decoding="async" class="event-img" data-slot="event-2" alt="Latin DJ set" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=80&auto=format&fit=crop">
+        <svg class="event-art-glyph" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="50" fill="none" stroke="#c85a72" stroke-width="0.8" opacity="0.7"/>
+          <g stroke="#c4a060" stroke-width="0.6" opacity="0.5">
+            <line x1="100" y1="30" x2="100" y2="50"/>
+            <line x1="100" y1="150" x2="100" y2="170"/>
+            <line x1="30" y1="100" x2="50" y2="100"/>
+            <line x1="150" y1="100" x2="170" y2="100"/>
+            <line x1="52" y1="52" x2="66" y2="66"/>
+            <line x1="148" y1="148" x2="134" y2="134"/>
+            <line x1="148" y1="52" x2="134" y2="66"/>
+            <line x1="52" y1="148" x2="66" y2="134"/>
+          </g>
+          <circle cx="100" cy="100" r="28" fill="#c85a72" opacity="0.3"/>
+          <circle cx="100" cy="100" r="14" fill="#c85a72" opacity="0.6"/>
+        </svg>
+        <div style="position:absolute; bottom:28%; left:0; right:0; text-align:center;">
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.2rem; color:var(--ivory); font-weight:400; line-height:0.9;">Reggaeton</p>
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:var(--crimson); margin-top:2px;">Tardeo</p>
+          <p style="font-size:0.48rem; letter-spacing:0.4em; color:var(--gold); margin-top:10px; text-transform:uppercase;">Season Opener</p>
+        </div>
+      </div>
+      <div class="event-overlay"></div>
+      <div class="event-glow"></div>
+      <div class="event-date"><span class="d">09</span><span class="m">May</span></div>
+      <div class="event-body">
+        <p class="event-tag">DJ Set · Latin</p>
+        <p class="event-name">Latino Gang</p>
+        <p class="event-detail">22:00 · Main Stage<br>Tickets from 30 lei</p>
+      </div>
+    </div>
+
+    <div class="event-card" data-reveal>
+      <div class="event-art ea-3">
+        <img loading="lazy" decoding="async" class="event-img" data-slot="event-3" alt="House party" src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=900&q=80&auto=format&fit=crop">
+        <svg class="event-art-glyph" viewBox="0 0 200 200">
+          <polygon points="100,20 175,100 100,180 25,100" fill="none" stroke="#c0a0e0" stroke-width="0.8" opacity="0.75"/>
+          <polygon points="100,45 150,100 100,155 50,100" fill="none" stroke="#c0a0e0" stroke-width="0.6" opacity="0.55"/>
+          <polygon points="100,70 125,100 100,130 75,100" fill="#c0a0e0" opacity="0.3"/>
+          <line x1="100" y1="20" x2="100" y2="180" stroke="#c0a0e0" stroke-width="0.4" opacity="0.4"/>
+          <line x1="25" y1="100" x2="175" y2="100" stroke="#c0a0e0" stroke-width="0.4" opacity="0.4"/>
+        </svg>
+        <div style="position:absolute; bottom:28%; left:0; right:0; text-align:center;">
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:2.2rem; color:var(--ivory); font-weight:400; line-height:0.9;">Afterwave</p>
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.05rem; color:#c0a0e0; margin-top:2px;">House Party</p>
+          <p style="font-size:0.48rem; letter-spacing:0.4em; color:var(--gold); margin-top:10px; text-transform:uppercase;">DJ Raati &middot; Set</p>
+        </div>
+      </div>
+      <div class="event-overlay"></div>
+      <div class="event-glow"></div>
+      <div class="event-date"><span class="d">16</span><span class="m">May</span></div>
+      <div class="event-body">
+        <p class="event-tag">Electronic · House</p>
+        <p class="event-name">Afterwave</p>
+        <p class="event-detail">23:00 · Full Venue<br>Free Entry until 00:30</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ RESERVATION ═════════ -->
+<!-- GALLERY / THE NIGHTS -->
+<section id="gallery">
+  <div class="gallery-head">
+    <div class="reveal">
+      <p class="tag">The Nights</p>
+      <h2>Inside <em>Mirador</em></h2>
+    </div>
+    <a href="#" class="gallery-link reveal rd-1">@mirador.rooftop &rarr;</a>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-cell tall"><div class="photo"><img loading="lazy" decoding="async" data-slot="gal-1" alt="Mirador night"
+      src="https://images.unsplash.com/photo-1566737236500-c8ac43014a67?w=900&q=80&auto=format&fit=crop"><span class="ph-label">Night</span></div></div>
+    <div class="gallery-cell wide"><div class="photo"><img loading="lazy" decoding="async" data-slot="gal-2" alt="The crowd"
+      src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1100&q=80&auto=format&fit=crop"><span class="ph-label">The Crowd</span></div></div>
+    <div class="gallery-cell"><div class="photo"><img loading="lazy" decoding="async" data-slot="gal-3" alt="Cocktail detail"
+      src="https://images.unsplash.com/photo-1574096079513-d8259312b785?w=700&q=80&auto=format&fit=crop"><span class="ph-label">Detail</span></div></div>
+    <div class="gallery-cell"><div class="photo"><img loading="lazy" decoding="async" data-slot="gal-4" alt="Behind the bar"
+      src="https://images.unsplash.com/photo-1536935338788-846bb9981813?w=700&q=80&auto=format&fit=crop"><span class="ph-label">The Bar</span></div></div>
+    <div class="gallery-cell wide"><div class="photo"><img loading="lazy" decoding="async" data-slot="gal-5" alt="Rooftop at dusk"
+      src="https://images.unsplash.com/photo-1485872299829-c673f5194813?w=1100&q=80&auto=format&fit=crop"><span class="ph-label">Dusk</span></div></div>
+  </div>
+</section>
+
+<section id="reservation">
+  <div class="res-ambient"></div>
+  <div class="res-inner">
+    <p class="res-eyebrow reveal">Secure Your Evening</p>
+    <h2 class="res-title reveal rd-1">Reserve<br><em>Your Table</em></h2>
+    <p class="res-sub reveal rd-2">Rooftop dining · Cocktail ceremony · Live sessions</p>
+    <form class="res-form reveal rd-2" onsubmit="return false">
+      <input class="res-input" type="email" placeholder="Your email">
+      <input class="res-input" type="text" placeholder="Date · Guests">
+      <button class="res-btn">Reserve</button>
+    </form>
+    <div class="res-info reveal rd-3">
+      <div class="res-info-item">
+        <p class="lbl">Address</p>
+        <p class="val">Str. Constantin Mille 18, Bucharest</p>
+      </div>
+      <div class="res-info-item">
+        <p class="lbl">Hours</p>
+        <p class="val">Tue–Sun · 17:00 → 02:00</p>
+      </div>
+      <div class="res-info-item">
+        <p class="lbl">Call</p>
+        <p class="val">+40 720 000 000</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="f-logo">
+    <svg class="logo-mark" viewBox="0 0 44 24" aria-hidden="true">
+      <path d="M3 12 Q22 1 41 12 Q22 23 3 12 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-opacity="0.7"/>
+      <circle cx="22" cy="12" r="5.4" fill="none" stroke="currentColor" stroke-width="1" stroke-opacity="0.6"/>
+      <circle cx="22" cy="12" r="2.2" fill="var(--crimson)"/>
+    </svg>Mirador Rooftop</span>
+  <span class="f-copy">© 2026 Mirador · Above the City</span>
+  <div class="f-socials">
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+    <a href="#">Spotify</a>
+  </div>
+</footer>
+
+<script>
+/* hero title letter split */
+(function splitTitle(){
+  document.querySelectorAll('#hero-title .word').forEach((word, wi) => {
+    const txt = word.textContent; word.textContent = '';
+    [...txt].forEach((ch, i) => {
+      const span = document.createElement('span');
+      span.className = 'letter';
+      span.textContent = ch === ' ' ? ' ' : ch;
+      span.style.animationDelay = (0.5 + wi * 0.12 + i * 0.04) + 's';
+      word.appendChild(span);
+    });
+  });
+})();
+
+/* image slots: fade in on load, keep branded fallback on error */
+(function initPhotos(){
+  document.querySelectorAll('img[data-slot], .event-img').forEach(img => {
+    const done = () => img.classList.add('loaded');
+    if (img.complete && img.naturalWidth > 0) done();
+    img.addEventListener('load', done);
+    img.addEventListener('error', () => { img.classList.remove('loaded'); img.style.display = 'none'; });
+  });
+})();
+
+/* custom cursor — desktop / fine-pointer only */
+const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+if (isFinePointer){
+  const cursor = { x: innerWidth/2, y: innerHeight/2 };
+  const cDot = document.getElementById('c-dot');
+  const cRing = document.getElementById('c-ring');
+  const cGlow = document.getElementById('c-glow');
+  let rx=cursor.x, ry=cursor.y, gx=cursor.x, gy=cursor.y, targetEl=null;
+  const magnets = () => document.querySelectorAll('a, button, .menu-row, .event-card');
+  document.addEventListener('mousemove', e => {
+    cursor.x=e.clientX; cursor.y=e.clientY;
+    let closest=null, cd=Infinity;
+    magnets().forEach(el => {
+      const r=el.getBoundingClientRect();
+      const cx=r.left+r.width/2, cy=r.top+r.height/2;
+      const d=Math.hypot(cx-e.clientX, cy-e.clientY);
+      if (d<80 && d<cd){ closest={cx,cy,d}; cd=d; }
+    });
+    targetEl=closest;
+  });
+  (function animCursor(){
+    cDot.style.left=cursor.x+'px'; cDot.style.top=cursor.y+'px';
+    let tx=cursor.x, ty=cursor.y;
+    if (targetEl){
+      const pull=Math.max(0,1-targetEl.d/80)*0.5;
+      tx=cursor.x+(targetEl.cx-cursor.x)*pull; ty=cursor.y+(targetEl.cy-cursor.y)*pull;
+      cRing.classList.add('hover');
+    } else cRing.classList.remove('hover');
+    rx+=(tx-rx)*0.22; ry+=(ty-ry)*0.22;
+    cRing.style.left=rx+'px'; cRing.style.top=ry+'px';
+    gx+=(cursor.x-gx)*0.08; gy+=(cursor.y-gy)*0.08;
+    cGlow.style.left=gx+'px'; cGlow.style.top=gy+'px';
+    requestAnimationFrame(animCursor);
+  })();
+} else {
+  const c=document.getElementById('cursor'); if(c) c.style.display='none';
+}
+
+/* navbar + progress + reveal */
+const navbar = document.getElementById('navbar');
+const progress = document.getElementById('scroll-progress');
+const heroBg = document.getElementById('hero-bg');
+const heroBokeh = document.getElementById('hero-bokeh');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal, [data-reveal]').forEach(el => io.observe(el));
+
+/* THE RITUAL: photo cross-fade driven by scroll */
+const ritual = document.getElementById('ritual');
+const rPhotos = document.querySelectorAll('.ritual-photo');
+const rSteps = document.querySelectorAll('.rstep');
+const rBars = document.querySelectorAll('.ritual-bar');
+const rCur = document.getElementById('ritual-cur');
+const R_N = rPhotos.length || 1;
+let rActive = -1;
+function clamp(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); }
+function updateRitual(){
+  if (!ritual) return;
+  const rect = ritual.getBoundingClientRect();
+  const total = ritual.offsetHeight - innerHeight;
+  const scrolled = clamp(-rect.top, 0, total);
+  const p = total > 0 ? scrolled/total : 0;
+  const step = clamp(Math.floor(p * R_N), 0, R_N - 1);
+  if (step !== rActive){
+    rActive = step;
+    rPhotos.forEach((el,i)=>el.classList.toggle('active', i===step));
+    rSteps.forEach((el,i)=>el.classList.toggle('active', i===step));
+    rBars.forEach((el,i)=>el.classList.toggle('active', i===step));
+    if (rCur) rCur.textContent = String(step+1).padStart(2,'0');
+  }
+}
+
+/* quote parallax */
+const quoteWrap = document.getElementById('quote-text-wrap');
+function updateQuote(){
+  if (!quoteWrap) return;
+  const r = quoteWrap.getBoundingClientRect();
+  const delta = (innerHeight/2 - (r.top + r.height/2)) * 0.12;
+  quoteWrap.style.transform = `translateY(${delta}px)`;
+}
+
+/* master scroll loop */
+let ticking=false;
+function onScroll(){
+  const y = scrollY;
+  navbar.classList.toggle('scrolled', y>60);
+  const docH = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (docH>0 ? y/docH*100 : 0) + '%';
+  heroBg.style.transform = `translateY(${y*0.2}px)`;
+  heroBokeh.style.transform = `translateY(${y*0.45}px)`;
+  updateRitual();
+  updateQuote();
+  ticking=false;
+}
+addEventListener('scroll', () => { if(!ticking){ requestAnimationFrame(onScroll); ticking=true; } }, { passive:true });
+addEventListener('resize', onScroll, { passive:true });
+onScroll();
+
+/* cocktail data drives BOTH desktop hover preview and mobile tap-reveal */
+const COCKTAILS = {
+  '1': { name:'Rouge Mirador',   color:'#c85a72', img:'https://images.unsplash.com/photo-1500217052183-bc01eee1a74e?q=80&w=688&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', tags:['Pomegranate','Champagne','Rose','Mint'] },
+  '2': { name:'Violet Nights',   color:'#8a6abf', img:'https://images.unsplash.com/photo-1536935338788-846bb9981813?w=600&q=80&auto=format&fit=crop', tags:['Gin','Lavender','Elderflower','Tonic'] },
+  '3': { name:'L Eclat Dore',    color:'#c4a060', img:'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=600&q=80&auto=format&fit=crop', tags:['Cognac','Saffron','Honey','Bitters'] },
+  '4': { name:'Smoke & Citrus',  color:'#e89556', img:'https://images.unsplash.com/photo-1621873495914-1c921811e37b?q=80&w=734&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', tags:['Mezcal','Lime','House Agave','Ancho'] },
+  '5': { name:'Garden Cut',      color:'#9ccc4a', img:'https://images.unsplash.com/photo-1551538827-9c037cb4f32a?w=600&q=80&auto=format&fit=crop', tags:['Cucumber','Basil','Vodka','Soda'] },
+  '6': { name:'Terrace Negroni', color:'#e07a4a', img:'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&q=80&auto=format&fit=crop', tags:['Campari','Vermouth','Orange Oil','Gold Leaf'] }
+};
+const menuRows = document.querySelectorAll('.menu-row');
+const wantHover = isFinePointer && window.matchMedia('(min-width: 821px)').matches;
+
+if (wantHover){
+  /* DESKTOP: floating photo + ingredients beside the cursor */
+  const menuPreview = document.getElementById('menu-preview');
+  const previewFrame = document.getElementById('preview-frame');
+  if (menuPreview && previewFrame){
+    menuRows.forEach(row => {
+      row.addEventListener('mouseenter', () => {
+        const c = COCKTAILS[row.dataset.preview]; if(!c) return;
+        menuPreview.style.setProperty('--cocktail', c.color);
+        previewFrame.innerHTML =
+          '<div class="photo" style="width:100%;height:100%">' +
+            '<img alt="'+c.name+'" src="'+c.img+'" onload="this.classList.add(\'loaded\')" onerror="this.style.display=\'none\'">' +
+            '<span class="ph-label">'+c.name+'</span>' +
+          '</div>' +
+          '<div class="mp-cap"><span class="mp-name">'+c.name+'</span>' +
+          '<span class="mp-tags">'+c.tags.join('  /  ')+'</span></div>';
+        menuPreview.classList.add('visible');
+      });
+      row.addEventListener('mouseleave', () => menuPreview.classList.remove('visible'));
+    });
+    addEventListener('mousemove', e => {
+      if (menuPreview.classList.contains('visible')){
+        menuPreview.style.left = (e.clientX + 150) + 'px';
+        menuPreview.style.top = e.clientY + 'px';
+      }
+    });
+  }
+} else {
+  /* MOBILE / TOUCH: tap a cocktail -> premium bottom-sheet (photo + ingredients + price), swipe-down to dismiss */
+  const sheet = document.createElement('div');
+  sheet.className = 'cocktail-sheet';
+  sheet.setAttribute('role','dialog'); sheet.setAttribute('aria-modal','true');
+  sheet.innerHTML =
+    '<div class="cs-backdrop"></div>' +
+    '<div class="cs-panel">' +
+      '<div class="cs-grip"></div>' +
+      '<div class="cs-photo"><div class="photo"><img alt=""><span class="ph-label"></span></div></div>' +
+      '<div class="cs-body">' +
+        '<span class="cs-num"></span>' +
+        '<h3 class="cs-name"></h3>' +
+        '<div class="cs-tags"></div>' +
+        '<div class="cs-foot"><span class="cs-price"></span><button class="cs-close" aria-label="Close">Close</button></div>' +
+      '</div>' +
+    '</div>';
+  document.body.appendChild(sheet);
+  const csPanel = sheet.querySelector('.cs-panel');
+  const csImg = sheet.querySelector('.cs-photo img');
+  const csLabel = sheet.querySelector('.cs-photo .ph-label');
+  const closeSheet = () => { sheet.classList.remove('open'); document.body.style.overflow = ''; };
+  sheet.querySelector('.cs-backdrop').addEventListener('click', closeSheet);
+  sheet.querySelector('.cs-close').addEventListener('click', closeSheet);
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+  let startY = null;
+  csPanel.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive:true });
+  csPanel.addEventListener('touchmove', e => {
+    if (startY === null) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 0) csPanel.style.transform = 'translateY(' + dy + 'px)';
+  }, { passive:true });
+  csPanel.addEventListener('touchend', e => {
+    const dy = e.changedTouches[0].clientY - (startY || 0);
+    csPanel.style.transform = '';
+    if (dy > 90) closeSheet();
+    startY = null;
+  });
+  menuRows.forEach(row => {
+    const c = COCKTAILS[row.dataset.preview]; if(!c) return;
+    const tog = document.createElement('span');
+    tog.className = 'menu-toggle'; tog.setAttribute('aria-hidden','true');
+    tog.innerHTML = '<span></span><span></span>';
+    row.appendChild(tog);
+    row.setAttribute('role','button');
+    row.addEventListener('click', () => {
+      sheet.querySelector('.cs-name').textContent = c.name;
+      csLabel.textContent = c.name;
+      sheet.querySelector('.cs-num').textContent = 'N° 0' + row.dataset.preview;
+      const priceEl = row.querySelector('.menu-price');
+      sheet.querySelector('.cs-price').textContent = priceEl ? priceEl.textContent : '';
+      sheet.querySelector('.cs-tags').innerHTML = c.tags.map(t => '<span class="menu-tag">'+t+'</span>').join('');
+      csPanel.style.setProperty('--cocktail', c.color);
+      csImg.classList.remove('loaded'); csImg.style.display = '';
+      csImg.onload = () => csImg.classList.add('loaded');
+      csImg.onerror = () => { csImg.style.display = 'none'; };
+      csImg.src = c.img;
+      sheet.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+}
+/* staggered reveals (second observer) */
+const io2 = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting){
+      e.target.classList.add('visible');
+      if (e.target.classList.contains('reveal-stagger')){
+        [...e.target.children].forEach((c,i) => { c.style.transitionDelay = (i*0.06)+'s'; });
+      }
+      io2.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal-stagger, .gallery-cell').forEach(el => io2.observe(el));
+document.querySelectorAll('.gallery-grid .gallery-cell').forEach((c,i) => { c.style.transitionDelay = (i*0.07)+'s'; });
+
+/* magnetic buttons (desktop / fine pointer only) */
+if (isFinePointer){
+  document.querySelectorAll('.btn, .nav-cta, .res-btn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const mx = e.clientX - (r.left + r.width/2);
+      const my = e.clientY - (r.top + r.height/2);
+      btn.style.transform = 'translate(' + (mx*0.22).toFixed(1) + 'px,' + (my*0.34).toFixed(1) + 'px)';
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
+  });
+}
+
+/* about-photo scroll parallax */
+const parallaxEls = document.querySelectorAll('[data-parallax]');
+let pTick = false;
+function updateParallax(){
+  for (const el of parallaxEls){
+    const speed = parseFloat(el.dataset.parallax) || 0.08;
+    const r = el.getBoundingClientRect();
+    const center = (r.top + r.height/2) - innerHeight/2;
+    el.style.transform = 'translateY(' + (center * -speed).toFixed(1) + 'px)';
+  }
+  pTick = false;
+}
+addEventListener('scroll', () => { if(!pTick){ requestAnimationFrame(updateParallax); pTick = true; } }, { passive:true });
+updateParallax();
+</script>
+</body>
+</html>
