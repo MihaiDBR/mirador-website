@@ -1236,7 +1236,8 @@ a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid va
   .mt-field input, .mt-field select{ font-size:16px; }
 }
 @media (max-width:620px){
-  #table-map{ min-width:640px; }
+  .mt-scroll{ overflow:hidden; touch-action:pan-y; }
+  #table-map{ width:100%; transform-origin:0 0; will-change:transform; }
   .mt-scroll-hint{ display:block; }
 }
 @media (prefers-reduced-motion:reduce){
@@ -1662,7 +1663,7 @@ a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid va
           <svg id="table-map" role="group" aria-label="Hartă mese Mirador"></svg>
         </div>
       </div>
-      <p class="mt-scroll-hint">← glisează harta →</p>
+      <p class="mt-scroll-hint">Apropie două degete pentru zoom · dublu-tap pentru a mări</p>
       <div class="mt-legend">
         <span><i class="lg-av"></i> Liber</span>
         <span><i class="lg-rs"></i> Rezervat</span>
@@ -2281,9 +2282,72 @@ updateParallax();
     });
   }
 
+  function wirePinchZoom(){
+    const scroll = root.parentElement; // .mt-scroll
+    if (!scroll) return;
+    const mq = window.matchMedia('(max-width:620px)');
+    let scale = 1, tx = 0, ty = 0;
+    let startDist = 0, startScale = 1, startMidX = 0, startMidY = 0, startTx = 0, startTy = 0;
+    let panning = false, startX = 0, startY = 0, lastTap = 0;
+    const MAXS = 4;
+    function dims(){ const r = scroll.getBoundingClientRect(); return { w:r.width, h:r.height, left:r.left, top:r.top }; }
+    function clamp(){
+      if (scale <= 1){ scale = 1; tx = 0; ty = 0; return; }
+      const d = dims();
+      tx = Math.min(0, Math.max(d.w * (1 - scale), tx));
+      ty = Math.min(0, Math.max(d.h * (1 - scale), ty));
+    }
+    function apply(){
+      root.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+      scroll.style.touchAction = scale > 1 ? 'none' : 'pan-y';
+    }
+    function reset(){ scale = 1; tx = 0; ty = 0; apply(); }
+    function dist(t){ return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+    function doubleTap(px, py){
+      if (scale > 1.1){ reset(); return; }
+      const S = 2.5, cx = (px - tx) / scale, cy = (py - ty) / scale;
+      scale = S; tx = px - cx * S; ty = py - cy * S; clamp(); apply();
+    }
+    scroll.addEventListener('touchstart', e => {
+      if (!mq.matches) return;
+      if (e.touches.length === 2){
+        startDist = dist(e.touches); startScale = scale;
+        const d = dims();
+        startMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - d.left;
+        startMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - d.top;
+        startTx = tx; startTy = ty; panning = false;
+      } else if (e.touches.length === 1){
+        startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+        startTx = tx; startTy = ty; panning = scale > 1;
+        const now = Date.now(), d = dims();
+        if (now - lastTap < 300) doubleTap(startX - d.left, startY - d.top);
+        lastTap = now;
+      }
+    }, { passive:true });
+    scroll.addEventListener('touchmove', e => {
+      if (!mq.matches) return;
+      if (e.touches.length === 2){
+        e.preventDefault();
+        let ns = startScale * (dist(e.touches) / startDist);
+        ns = Math.max(1, Math.min(MAXS, ns));
+        const k = ns / startScale;
+        tx = startMidX - (startMidX - startTx) * k;
+        ty = startMidY - (startMidY - startTy) * k;
+        scale = ns; clamp(); apply();
+      } else if (e.touches.length === 1 && panning && scale > 1){
+        e.preventDefault();
+        tx = startTx + (e.touches[0].clientX - startX);
+        ty = startTy + (e.touches[0].clientY - startY);
+        clamp(); apply();
+      }
+    }, { passive:false });
+    mq.addEventListener('change', e => { if (!e.matches) reset(); });
+  }
+
   renderMap();
   wireSelection();
   wireForm();
+  wirePinchZoom();
 })();
 </script>
 </body>
