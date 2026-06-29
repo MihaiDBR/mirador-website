@@ -2064,9 +2064,13 @@ updateParallax();
     root.querySelectorAll('.mt-table').forEach(el =>
       el.classList.toggle('selected', el.dataset.id === t.id));
     panel.innerHTML = buildFormHTML(t);
+    if (isMobile()) openAside();
     const first = panel.querySelector('input[name="nume"]');
     if (first) first.focus();
   }
+
+  function openAside(){ aside.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeAside(){ aside.classList.remove('open'); document.body.style.overflow = ''; }
 
   function wireSelection(){
     root.addEventListener('click', e => {
@@ -2102,6 +2106,7 @@ updateParallax();
     mapGroup.classList.remove('has-selection');
     root.querySelectorAll('.mt-table.selected').forEach(el => el.classList.remove('selected'));
     panel.innerHTML = '<div class="mt-panel-empty">Alege o masă de pe hartă pentru a rezerva.</div>';
+    if (isMobile()) closeAside();
   }
 
   function showConfirmation(f){
@@ -2159,6 +2164,12 @@ updateParallax();
 
     panel.addEventListener('click', e => {
       if (e.target.classList && e.target.classList.contains('mt-reset')) resetPanel();
+    });
+
+    const backdrop = aside.querySelector('.mt-aside-backdrop');
+    if (backdrop) backdrop.addEventListener('click', closeAside);
+    addEventListener('keydown', e => {
+      if (e.key === 'Escape' && aside.classList.contains('open')) closeAside();
     });
   }
 
