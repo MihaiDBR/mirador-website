@@ -1955,6 +1955,75 @@ function updateParallax(){
 }
 addEventListener('scroll', () => { if(!pTick){ requestAnimationFrame(updateParallax); pTick = true; } }, { passive:true });
 updateParallax();
+
+/* ═════════ TABLE BOOKING MAP (frontend-only preview) ═════════ */
+(function initTableBooking(){
+  const root = document.getElementById('table-map');
+  const aside = document.getElementById('mt-aside');
+  const panel = document.getElementById('mt-panel');
+  if (!root || !aside || !panel) return;
+
+  const VIEWBOX = { w:1000, h:700 };
+  const RADIUS = { 2:18, 4:24, 6:30, 8:38 };
+
+  // Single source of truth — 20 tables / 80 seats (8×2, 6×4, 4×6, 2×8); 4 start reserved.
+  const TABLES = [
+    { id:'t1',  label:'01', cap:4, x:360, y:130, status:'available' },
+    { id:'t2',  label:'02', cap:2, x:500, y:120, status:'available' },
+    { id:'t3',  label:'03', cap:2, x:620, y:120, status:'reserved'  },
+    { id:'t4',  label:'04', cap:4, x:740, y:125, status:'available' },
+    { id:'t5',  label:'05', cap:2, x:880, y:150, status:'available' },
+    { id:'t6',  label:'06', cap:6, x:150, y:300, status:'available' },
+    { id:'t7',  label:'07', cap:2, x:330, y:290, status:'available' },
+    { id:'t8',  label:'08', cap:4, x:480, y:280, status:'reserved'  },
+    { id:'t9',  label:'09', cap:6, x:640, y:285, status:'available' },
+    { id:'t10', label:'10', cap:4, x:820, y:300, status:'available' },
+    { id:'t11', label:'11', cap:4, x:150, y:470, status:'available' },
+    { id:'t12', label:'12', cap:6, x:320, y:460, status:'available' },
+    { id:'t13', label:'13', cap:8, x:500, y:450, status:'available' },
+    { id:'t14', label:'14', cap:6, x:680, y:455, status:'reserved'  },
+    { id:'t15', label:'15', cap:2, x:860, y:470, status:'available' },
+    { id:'t16', label:'16', cap:2, x:250, y:600, status:'available' },
+    { id:'t17', label:'17', cap:4, x:420, y:605, status:'available' },
+    { id:'t18', label:'18', cap:8, x:590, y:600, status:'available' },
+    { id:'t19', label:'19', cap:2, x:760, y:605, status:'available' },
+    { id:'t20', label:'20', cap:2, x:900, y:600, status:'reserved'  }
+  ];
+
+  const state = { selected:null };
+  let mapGroup = null;
+
+  function tableEl(t){
+    const r = RADIUS[t.cap];
+    const reserved = t.status === 'reserved';
+    return '<g class="mt-table' + (reserved ? ' reserved' : '') + '"' +
+      ' data-id="' + t.id + '" data-cap="' + t.cap + '"' +
+      ' role="button" tabindex="' + (reserved ? '-1' : '0') + '"' +
+      ' aria-label="Masa ' + t.label + ', ' + t.cap + ' locuri, ' +
+        (reserved ? 'rezervat' : 'disponibil') + '"' +
+      (reserved ? ' aria-disabled="true"' : '') + '>' +
+      '<circle class="mt-disc" cx="' + t.x + '" cy="' + t.y + '" r="' + r + '"></circle>' +
+      '<text class="mt-lbl" x="' + t.x + '" y="' + t.y + '">' + t.label + '</text>' +
+      '</g>';
+  }
+
+  function renderMap(){
+    root.setAttribute('viewBox', '0 0 ' + VIEWBOX.w + ' ' + VIEWBOX.h);
+    root.innerHTML =
+      '<rect class="mt-outline" x="40" y="40" width="920" height="620" rx="26"></rect>' +
+      '<rect class="mt-bar" x="60" y="60" width="240" height="140" rx="10"></rect>' +
+      '<text class="mt-bar-lbl" x="180" y="138">Bar</text>' +
+      '<text class="mt-view-lbl" x="520" y="30">← City View →</text>' +
+      '<text class="mt-view-lbl" x="986" y="350" transform="rotate(90 986 350)">← City View →</text>' +
+      '<path class="mt-sprig" d="M70 230 q14 -20 34 -12 M104 218 q-6 -22 -34 -12"></path>' +
+      '<path class="mt-sprig" d="M930 560 q-14 -20 -34 -12 M896 548 q6 -22 34 -12"></path>' +
+      '<path class="mt-sprig" d="M70 640 q18 -16 36 -6 M106 634 q-2 -24 -36 -6"></path>' +
+      '<g class="mt-map">' + TABLES.map(tableEl).join('') + '</g>';
+    mapGroup = root.querySelector('.mt-map');
+  }
+
+  renderMap();
+})();
 </script>
 </body>
 </html>
