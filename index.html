@@ -2097,8 +2097,74 @@ updateParallax();
     }
   }
 
+  function resetPanel(){
+    state.selected = null;
+    mapGroup.classList.remove('has-selection');
+    root.querySelectorAll('.mt-table.selected').forEach(el => el.classList.remove('selected'));
+    panel.innerHTML = '<div class="mt-panel-empty">Alege o masă de pe hartă pentru a rezerva.</div>';
+  }
+
+  function showConfirmation(f){
+    const t = state.selected;
+    const summary = 'Masa ' + t.label + ' · ' +
+      formatRoDate(f.elements['data'].value) + ' · ' + f.elements['ora'].value;
+    panel.innerHTML =
+      '<div class="mt-confirm" role="status" aria-live="polite">' +
+        '<div class="mt-check">✓</div>' +
+        '<h3>Rezervare trimisă</h3>' +
+        '<p class="mt-summary">' + summary + '</p>' +
+        '<p class="mt-note">Aceasta este o previzualizare demo — momentan nu există un sistem de ' +
+          'rezervări activ în spate. Într-o versiune finală, masa ar fi confirmată automat.</p>' +
+        '<button class="mt-reset" type="button">Alege altă masă</button>' +
+      '</div>';
+    // Flip the booked table to reserved for realism (session only).
+    t.status = 'reserved';
+    const el = root.querySelector('.mt-table[data-id="' + t.id + '"]');
+    if (el){
+      el.classList.remove('selected');
+      el.classList.add('reserved');
+      el.setAttribute('aria-disabled', 'true');
+      el.setAttribute('tabindex', '-1');
+    }
+    mapGroup.classList.remove('has-selection');
+  }
+
+  function wireForm(){
+    panel.addEventListener('submit', e => {
+      if (!e.target || e.target.id !== 'mt-form') return;
+      e.preventDefault();
+      const f = e.target;
+      const err = f.querySelector('#mt-err');
+      f.querySelectorAll('.mt-field').forEach(x => x.classList.remove('invalid'));
+      const order = ['nume','telefon','data','ora','persoane'];
+      for (const name of order){
+        const ctrl = f.elements[name];
+        const val = (ctrl.value || '').trim();
+        if (!val){
+          ctrl.closest('.mt-field').classList.add('invalid');
+          err.textContent = 'Te rugăm completează toate câmpurile.';
+          ctrl.focus();
+          return;
+        }
+      }
+      if (f.elements['data'].value < todayISO()){
+        f.elements['data'].closest('.mt-field').classList.add('invalid');
+        err.textContent = 'Alege o dată din viitor.';
+        f.elements['data'].focus();
+        return;
+      }
+      err.textContent = '';
+      showConfirmation(f);
+    });
+
+    panel.addEventListener('click', e => {
+      if (e.target.classList && e.target.classList.contains('mt-reset')) resetPanel();
+    });
+  }
+
   renderMap();
   wireSelection();
+  wireForm();
 })();
 </script>
 </body>
