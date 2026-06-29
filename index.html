@@ -1129,6 +1129,7 @@ a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid va
     <li><a href="#ritual">The Ritual</a></li>
     <li><a href="#menu">Menu</a></li>
     <li><a href="#events">Events</a></li>
+    <li><a href="#tables">Tables</a></li>
     <li><a href="#reservation">Contact</a></li>
   </ul>
   <a href="#reservation" class="nav-cta">Reserve</a>
@@ -1139,6 +1140,7 @@ a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid va
   <a href="#ritual">The Ritual</a>
   <a href="#menu">Menu</a>
   <a href="#events">Events</a>
+  <a href="#tables">Tables</a>
   <a href="#reservation">Contact</a>
   <a href="#reservation" class="mm-cta">Reserve</a>
 </div>
@@ -1499,6 +1501,33 @@ a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid va
       src="https://images.unsplash.com/photo-1536935338788-846bb9981813?w=700&q=80&auto=format&fit=crop"><span class="ph-label">The Bar</span></div></div>
     <div class="gallery-cell wide"><div class="photo"><img loading="lazy" decoding="async" data-slot="gal-5" alt="Rooftop at dusk"
       src="https://images.unsplash.com/photo-1485872299829-c673f5194813?w=1100&q=80&auto=format&fit=crop"><span class="ph-label">Dusk</span></div></div>
+  </div>
+</section>
+
+<!-- ═════════ TABLES / BOOKING MAP ═════════ -->
+<section id="tables">
+  <div class="mt-head reveal">
+    <p class="tag">The Floor</p>
+    <h2>Alege-ți <em>masa</em></h2>
+    <p>O hartă a terasei, văzută de sus. Atinge o masă liberă și rezervă-ți locul cu vedere spre oraș. Aceasta este o previzualizare — momentan fără sistem de rezervări activ.</p>
+  </div>
+  <div class="mt-wrap">
+    <div class="mt-map-col reveal rd-1">
+      <div class="mt-map-frame">
+        <svg id="table-map" role="group" aria-label="Hartă mese Mirador"></svg>
+      </div>
+      <div class="mt-legend">
+        <span><i></i> Disponibil</span>
+        <span><i class="res"></i> Rezervat</span>
+        <span>2 · 4 · 6 · 8 locuri</span>
+      </div>
+    </div>
+    <div class="mt-aside" id="mt-aside">
+      <div class="mt-aside-backdrop"></div>
+      <div class="mt-panel" id="mt-panel">
+        <div class="mt-panel-empty">Alege o masă de pe hartă pentru a rezerva.</div>
+      </div>
+    </div>
   </div>
 </section>
 
