@@ -2079,6 +2079,14 @@ updateParallax();
       if (t && t.status !== 'reserved') selectTable(t);
     });
 
+    root.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+      const g = e.target.closest('.mt-table'); if (!g) return;
+      e.preventDefault();
+      const t = TABLES.find(x => x.id === g.dataset.id);
+      if (t && t.status !== 'reserved') selectTable(t);
+    });
+
     if (isFinePointer){
       const tip = document.createElement('div');
       tip.className = 'mt-tip';
