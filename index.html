@@ -2151,7 +2151,7 @@ updateParallax();
   }
 
   function selectTable(t){
-    if (!t || t.status === 'reserved') return;
+    if (!t || t.status !== 'available') return;
     state.selected = t;
     mapGroup.classList.add('has-selection');
     root.querySelectorAll('.mt-table').forEach(el =>
@@ -2169,7 +2169,7 @@ updateParallax();
     root.addEventListener('click', e => {
       const g = e.target.closest('.mt-table'); if (!g) return;
       const t = TABLES.find(x => x.id === g.dataset.id);
-      if (t && t.status !== 'reserved') selectTable(t);
+      if (t && t.status === 'available') selectTable(t);
     });
 
     root.addEventListener('keydown', e => {
@@ -2177,7 +2177,7 @@ updateParallax();
       const g = e.target.closest('.mt-table'); if (!g) return;
       e.preventDefault();
       const t = TABLES.find(x => x.id === g.dataset.id);
-      if (t && t.status !== 'reserved') selectTable(t);
+      if (t && t.status === 'available') selectTable(t);
     });
 
     if (isFinePointer){
@@ -2187,9 +2187,9 @@ updateParallax();
       root.addEventListener('mouseover', e => {
         const g = e.target.closest('.mt-table'); if (!g) return;
         const t = TABLES.find(x => x.id === g.dataset.id); if (!t) return;
-        tip.textContent = t.status === 'reserved'
-          ? ('Masa ' + t.label + ' · Rezervat')
-          : ('Masa ' + t.label + ' · ' + t.cap + ' locuri');
+        tip.textContent = t.status === 'available'
+          ? ('Masa ' + t.label + ' · ' + t.cap + ' locuri')
+          : ('Masa ' + t.label + ' · ' + RO_STATUS[t.status]);
         tip.classList.add('show');
       });
       root.addEventListener('mousemove', e => {
@@ -2227,10 +2227,11 @@ updateParallax();
     t.status = 'reserved';
     const el = root.querySelector('.mt-table[data-id="' + t.id + '"]');
     if (el){
-      el.classList.remove('selected');
-      el.classList.add('reserved');
+      el.classList.remove('selected', 's-available');
+      el.classList.add('s-reserved');
       el.setAttribute('aria-disabled', 'true');
       el.setAttribute('tabindex', '-1');
+      el.setAttribute('data-status', 'reserved');
     }
     mapGroup.classList.remove('has-selection');
     const confirmEl = panel.querySelector('.mt-confirm');
