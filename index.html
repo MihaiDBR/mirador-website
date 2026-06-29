@@ -1997,62 +1997,121 @@ updateParallax();
   const panel = document.getElementById('mt-panel');
   if (!root || !aside || !panel) return;
 
-  const VIEWBOX = { w:1000, h:700 };
-  const RADIUS = { 2:18, 4:24, 6:30, 8:38 };
+  const VIEWBOX = { w:1120, h:1000 };
 
-  // Single source of truth — 20 tables / 80 seats (8×2, 6×4, 4×6, 2×8); 4 start reserved.
+  // Per-type geometry: table-top shape, chair offsets (from center), status-disc radius,
+  // and the selection-halo half-dimensions (covers chairs).
+  const SHAPES = {
+    round:  { top:{ kind:'circle', r:20 }, disc:15, halo:{ hw:48, hh:26 },
+      chairs:[ {dx:-34,dy:0,w:12,h:22}, {dx:34,dy:0,w:12,h:22} ] },
+    square: { top:{ kind:'rect', w:56, h:56, rx:10 }, disc:17, halo:{ hw:54, hh:54 },
+      chairs:[ {dx:0,dy:-40,w:24,h:12}, {dx:0,dy:40,w:24,h:12},
+               {dx:-40,dy:0,w:12,h:24}, {dx:40,dy:0,w:12,h:24} ] },
+    pill6:  { top:{ kind:'rect', w:150, h:52, rx:26 }, disc:18, halo:{ hw:86, hh:50 },
+      chairs:[ {dx:-45,dy:-40,w:24,h:12}, {dx:0,dy:-40,w:24,h:12}, {dx:45,dy:-40,w:24,h:12},
+               {dx:-45,dy:40,w:24,h:12}, {dx:0,dy:40,w:24,h:12}, {dx:45,dy:40,w:24,h:12} ] },
+    pill8:  { top:{ kind:'rect', w:200, h:52, rx:26 }, disc:18, halo:{ hw:110, hh:50 },
+      chairs:[ {dx:-67,dy:-40,w:24,h:12}, {dx:-22,dy:-40,w:24,h:12}, {dx:22,dy:-40,w:24,h:12}, {dx:67,dy:-40,w:24,h:12},
+               {dx:-67,dy:40,w:24,h:12}, {dx:-22,dy:40,w:24,h:12}, {dx:22,dy:40,w:24,h:12}, {dx:67,dy:40,w:24,h:12} ] },
+    stand:  { top:{ kind:'circle', r:16 }, disc:13, halo:{ hw:36, hh:22 },
+      chairs:[ {dx:-26,dy:0,w:11,h:11}, {dx:26,dy:0,w:11,h:11} ] }
+  };
+
+  const RO_STATUS = { available:'Liber', reserved:'Rezervat', filled:'Ocupat' };
+
+  // Single source of truth — 24 tables / 88 seats.
+  // Table Zone (20): 8×round(2), 6×square(4), 4×pill6(6), 2×pill8(8) = 80 seats.
+  // Stand zone right margin (4): standing 2-seat = 8 seats.
   const TABLES = [
-    { id:'t1',  label:'01', cap:4, x:360, y:130, status:'available' },
-    { id:'t2',  label:'02', cap:2, x:500, y:120, status:'available' },
-    { id:'t3',  label:'03', cap:2, x:620, y:120, status:'reserved'  },
-    { id:'t4',  label:'04', cap:4, x:740, y:125, status:'available' },
-    { id:'t5',  label:'05', cap:2, x:880, y:150, status:'available' },
-    { id:'t6',  label:'06', cap:6, x:150, y:300, status:'available' },
-    { id:'t7',  label:'07', cap:2, x:330, y:290, status:'available' },
-    { id:'t8',  label:'08', cap:4, x:480, y:280, status:'reserved'  },
-    { id:'t9',  label:'09', cap:6, x:640, y:285, status:'available' },
-    { id:'t10', label:'10', cap:4, x:820, y:300, status:'available' },
-    { id:'t11', label:'11', cap:4, x:150, y:470, status:'available' },
-    { id:'t12', label:'12', cap:6, x:320, y:460, status:'available' },
-    { id:'t13', label:'13', cap:8, x:500, y:450, status:'available' },
-    { id:'t14', label:'14', cap:6, x:680, y:455, status:'reserved'  },
-    { id:'t15', label:'15', cap:2, x:860, y:470, status:'available' },
-    { id:'t16', label:'16', cap:2, x:250, y:600, status:'available' },
-    { id:'t17', label:'17', cap:4, x:420, y:605, status:'available' },
-    { id:'t18', label:'18', cap:8, x:590, y:600, status:'available' },
-    { id:'t19', label:'19', cap:2, x:760, y:605, status:'available' },
-    { id:'t20', label:'20', cap:2, x:900, y:600, status:'reserved'  }
+    { id:'t1',  label:'T01', cap:8, type:'pill8',  x:190, y:485, status:'available' },
+    { id:'t2',  label:'T02', cap:4, type:'square', x:400, y:485, status:'available' },
+    { id:'t3',  label:'T03', cap:6, type:'pill6',  x:610, y:485, status:'reserved'  },
+    { id:'t4',  label:'T04', cap:4, type:'square', x:820, y:485, status:'available' },
+    { id:'t5',  label:'T05', cap:2, type:'round',  x:190, y:588, status:'available' },
+    { id:'t6',  label:'T06', cap:6, type:'pill6',  x:400, y:588, status:'available' },
+    { id:'t7',  label:'T07', cap:2, type:'round',  x:610, y:588, status:'filled'    },
+    { id:'t8',  label:'T08', cap:4, type:'square', x:820, y:588, status:'available' },
+    { id:'t9',  label:'T09', cap:4, type:'square', x:190, y:691, status:'available' },
+    { id:'t10', label:'T10', cap:2, type:'round',  x:400, y:691, status:'available' },
+    { id:'t11', label:'T11', cap:8, type:'pill8',  x:610, y:691, status:'reserved'  },
+    { id:'t12', label:'T12', cap:2, type:'round',  x:820, y:691, status:'available' },
+    { id:'t13', label:'T13', cap:6, type:'pill6',  x:190, y:794, status:'available' },
+    { id:'t14', label:'T14', cap:2, type:'round',  x:400, y:794, status:'available' },
+    { id:'t15', label:'T15', cap:4, type:'square', x:610, y:794, status:'filled'    },
+    { id:'t16', label:'T16', cap:2, type:'round',  x:820, y:794, status:'available' },
+    { id:'t17', label:'T17', cap:2, type:'round',  x:190, y:897, status:'available' },
+    { id:'t18', label:'T18', cap:6, type:'pill6',  x:400, y:897, status:'available' },
+    { id:'t19', label:'T19', cap:2, type:'round',  x:610, y:897, status:'available' },
+    { id:'t20', label:'T20', cap:4, type:'square', x:820, y:897, status:'filled'    },
+    { id:'t21', label:'T21', cap:2, type:'stand',  x:965, y:100, status:'available' },
+    { id:'t22', label:'T22', cap:2, type:'stand',  x:965, y:180, status:'reserved'  },
+    { id:'t23', label:'T23', cap:2, type:'stand',  x:965, y:260, status:'available' },
+    { id:'t24', label:'T24', cap:2, type:'stand',  x:965, y:340, status:'filled'    }
   ];
 
   const state = { selected:null };
   let mapGroup = null;
 
+  function chairRect(cx, cy, c){
+    return '<rect class="mt-chair" x="' + (cx + c.dx - c.w/2) + '" y="' + (cy + c.dy - c.h/2) +
+      '" width="' + c.w + '" height="' + c.h + '" rx="4"></rect>';
+  }
+  function topShape(cx, cy, top){
+    if (top.kind === 'circle')
+      return '<circle class="mt-top" cx="' + cx + '" cy="' + cy + '" r="' + top.r + '"></circle>';
+    return '<rect class="mt-top" x="' + (cx - top.w/2) + '" y="' + (cy - top.h/2) +
+      '" width="' + top.w + '" height="' + top.h + '" rx="' + top.rx + '"></rect>';
+  }
   function tableEl(t){
-    const r = RADIUS[t.cap];
-    const reserved = t.status === 'reserved';
-    return '<g class="mt-table' + (reserved ? ' reserved' : '') + '"' +
-      ' data-id="' + t.id + '" data-cap="' + t.cap + '"' +
-      ' role="button" tabindex="' + (reserved ? '-1' : '0') + '"' +
-      ' aria-label="Masa ' + t.label + ', ' + t.cap + ' locuri, ' +
-        (reserved ? 'rezervat' : 'disponibil') + '"' +
-      (reserved ? ' aria-disabled="true"' : '') + '>' +
-      '<circle class="mt-disc" cx="' + t.x + '" cy="' + t.y + '" r="' + r + '"></circle>' +
-      '<text class="mt-lbl" x="' + t.x + '" y="' + t.y + '">' + t.label + '</text>' +
+    const s = SHAPES[t.type], cx = t.x, cy = t.y;
+    const interactive = t.status === 'available';
+    const halo = '<rect class="mt-halo" x="' + (cx - s.halo.hw) + '" y="' + (cy - s.halo.hh) +
+      '" width="' + (s.halo.hw*2) + '" height="' + (s.halo.hh*2) + '" rx="14"></rect>';
+    const chairs = s.chairs.map(c => chairRect(cx, cy, c)).join('');
+    const disc = '<circle class="mt-disc" cx="' + cx + '" cy="' + cy + '" r="' + s.disc + '"></circle>';
+    const lbl = '<text class="mt-lbl" x="' + cx + '" y="' + cy + '">' + t.label + '</text>';
+    const badge = t.status === 'reserved'
+      ? '<text class="mt-badge" x="' + cx + '" y="' + (cy + s.halo.hh + 13) + '">Rezervat</text>' : '';
+    return '<g class="mt-table s-' + t.status + '"' +
+      ' data-id="' + t.id + '" data-cap="' + t.cap + '" data-status="' + t.status + '"' +
+      ' role="button" tabindex="' + (interactive ? '0' : '-1') + '"' +
+      ' aria-label="Masa ' + t.label + ', ' + t.cap + ' locuri, ' + RO_STATUS[t.status].toLowerCase() + '"' +
+      (interactive ? '' : ' aria-disabled="true"') + '>' +
+      halo + chairs + topShape(cx, cy, s.top) + disc + lbl + badge +
       '</g>';
   }
 
+  function zoneRect(cls, x, y, w, h, rx){
+    return '<rect class="mt-zone ' + cls + '" x="' + x + '" y="' + y + '" width="' + w +
+      '" height="' + h + '" rx="' + (rx || 8) + '"></rect>';
+  }
+  function zoneLabel(cls, x, y, text, rot){
+    const tr = rot ? ' transform="rotate(' + rot + ' ' + x + ' ' + y + ')"' : '';
+    return '<text class="mt-zone-lbl ' + cls + '" x="' + x + '" y="' + y + '"' + tr + '>' + text + '</text>';
+  }
   function renderMap(){
     root.setAttribute('viewBox', '0 0 ' + VIEWBOX.w + ' ' + VIEWBOX.h);
-    root.innerHTML =
-      '<rect class="mt-outline" x="40" y="40" width="920" height="620" rx="26"></rect>' +
-      '<rect class="mt-bar" x="60" y="60" width="240" height="140" rx="10"></rect>' +
-      '<text class="mt-bar-lbl" x="180" y="138">Bar</text>' +
-      '<text class="mt-view-lbl" x="520" y="30">← City View →</text>' +
-      '<text class="mt-view-lbl" x="986" y="350" transform="rotate(90 986 350)">← City View →</text>' +
-      '<path class="mt-sprig" d="M70 230 q14 -20 34 -12 M104 218 q-6 -22 -34 -12"></path>' +
-      '<path class="mt-sprig" d="M930 560 q-14 -20 -34 -12 M896 548 q6 -22 34 -12"></path>' +
-      '<path class="mt-sprig" d="M70 640 q18 -16 36 -6 M106 634 q-2 -24 -36 -6"></path>' +
-      '<g class="mt-map">' + TABLES.map(tableEl).join('') + '</g>';
+    root.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    const zones =
+      zoneRect('mt-zone-outline', 14, 14, 1092, 972, 10) +
+      zoneRect('mt-zone-entrance', 40, 150, 80, 210, 8) +
+        zoneLabel('sm', 80, 255, 'Entrance', -90) +
+      zoneRect('mt-zone-building', 130, 150, 215, 210, 8) +
+        zoneLabel('', 237, 246, 'Part of building') +
+        zoneLabel('sm', 237, 268, 'cu barul') +
+      zoneRect('mt-zone-dj', 360, 150, 110, 80, 8) +
+        zoneLabel('', 415, 190, 'DJ') +
+      zoneRect('mt-zone-bar', 485, 150, 345, 80, 8) +
+        zoneLabel('bar', 657, 192, 'Bar') +
+      zoneRect('mt-zone-bar', 830, 55, 75, 175, 8) +
+        zoneLabel('bar', 867, 142, 'Bar', -90) +
+      zoneRect('mt-zone-stand', 905, 55, 120, 305, 8) +
+        zoneLabel('sm', 1008, 207, 'Stand', 90) +
+      zoneRect('mt-zone-stand', 360, 235, 545, 125, 8) +
+        zoneLabel('', 632, 297, 'Stand zone') +
+      zoneRect('mt-zone-table', 40, 395, 1045, 575, 8) +
+        zoneLabel('zone', 560, 418, 'Table zone');
+    root.innerHTML = zones + '<g class="mt-map">' + TABLES.map(tableEl).join('') + '</g>';
     mapGroup = root.querySelector('.mt-map');
   }
 
